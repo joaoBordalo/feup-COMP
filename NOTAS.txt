@@ -1,0 +1,8 @@
+NOTAS:
+
+- Incluir a abertura do tago como parte do token da tag
+
+Exemplo: (como deve ser:) TOKEN: <nome_tag
+	 (em vez de:)   TOKEN1: <
+			TOKEN2: nome_tag
+			Exp: TOKEN1 TOKEN2
