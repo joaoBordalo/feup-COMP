@@ -1,7 +1,7 @@
 Os Filhos de Airport:
 Com
-Apon
-AponEdgeLights
+Apron
+ApronEdgeLights
 Approach
 Ndb
 BlastFence
