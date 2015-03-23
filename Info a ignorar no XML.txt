@@ -1,0 +1,27 @@
+Os Filhos de Airport:
+Com
+Apon
+AponEdgeLights
+Approach
+Ndb
+BlastFence
+BoundaryFence
+DeleteAirport
+
+
+O que interessa:
+
+Airport
+TaxiwayPoint
+TaxiwayParking
+TaxiName
+TaxiwayPath
+Tower
+Services
+Runway
+RunwayAlias
+TaxiwaySign
+Waypoint
+Helipad
+Start
+Jetway
