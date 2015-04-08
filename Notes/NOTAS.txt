@@ -6,3 +6,5 @@ Exemplo: (como deve ser:) TOKEN: <nome_tag
 	 (em vez de:)   TOKEN1: <
 			TOKEN2: nome_tag
 			Exp: TOKEN1 TOKEN2
+
+mudei isso. acho que agora está o pretendido
