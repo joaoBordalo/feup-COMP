@@ -12,7 +12,10 @@ EQUALS: '=';
 STRING: [a-zA-Z]+;
 QUOTES: '"';
 OP: ('+' | '-');
+DISTANCE: (FLOAT | INT) [mM];
 
+//corrigir strings e valores para terem caracteres especiais
+//como _ , ~ # etc, o que for necessário, confirmar com o xml exemplo
 
 //tag symbols
 TAG_OPEN: '<';
@@ -24,13 +27,14 @@ TAG_CLOSE_SLASH: '/>';
 //xml elements
 tagName: STRING;
 attribute: STRING EQUALS QUOTES attributeValue QUOTES;
-attributeValue: OP? INT | OP? FLOAT | STRING;
+attributeValue: OP? INT | OP? FLOAT | DISTANCE | STRING*;
 comment: '<!--' .*? '-->';
 
 //Grammar
 document: xmlItems* ;
 xmlItems: xmlElement | comment;
 
+//está generico, tornar mais concreto?
 xmlElement:
     TAG_OPEN tagName attribute* TAG_CLOSE xmlItems* TAG_OPEN_SLASH tagName TAG_CLOSE
    | TAG_OPEN tagName attribute* TAG_CLOSE_SLASH;
@@ -38,4 +42,3 @@ xmlElement:
 
 //Parser init
 start: document EOF;
-
