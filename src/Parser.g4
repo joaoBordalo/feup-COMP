@@ -5,7 +5,7 @@ language=Java;
 }
 
 //basic types
-WS: [\t \n \r]+ -> skip; //whitespaces
+WS: [\\t \n \\r]+ -> skip; //whitespaces
 INT: [0-9]+;
 FLOAT: [0-9]* '.' [0-9]+;
 EQUALS: '=';
@@ -36,8 +36,13 @@ xmlItems: xmlElement | comment;
 
 //está generico, tornar mais concreto?
 xmlElement:
-    TAG_OPEN tagName attribute* TAG_CLOSE xmlItems* TAG_OPEN_SLASH tagName TAG_CLOSE
-   | TAG_OPEN tagName attribute* TAG_CLOSE_SLASH;
+    elementStart attribute* TAG_CLOSE xmlItems* elementEnd TAG_CLOSE
+   | elementStart attribute* TAG_CLOSE_SLASH;
+
+elementEnd: TAG_OPEN_SLASH tagName;
+
+
+elementStart: TAG_OPEN tagName;
 
 
 //Parser init
