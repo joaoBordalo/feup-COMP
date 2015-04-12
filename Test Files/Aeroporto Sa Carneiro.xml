@@ -164,8 +164,8 @@
          frequency="118.0000"
          type="TOWER"
          name="PORTO"/>
-      <!-- --------------->
-      <!-- --------------->
+      <!-- xxxxxx-->
+      <!-- xxxxxx-->
       <TaxiwayPoint
          index="0"
          type="NORMAL"
@@ -3005,8 +3005,8 @@ type="TAXI"
                lon="-8.68525475263596"/>
          </Apron>
       </Aprons>
-      <!-- ------------ -->
-      <!-- ------------ -->
+      <!-- xxxxxx-->
+      <!-- xxxxxx-->
       <!-- IGNORAR -->
       <ApronEdgeLights>
          <EdgeLights>

@@ -10,7 +10,7 @@ xmlItems: airportElement | COMMENT;
 attributeName: STRING;
 //tagName: STRING;
 attribute: attributeName EQUALS QUOTES attributeValue QUOTES;
-attributeValue: OP? INT | OP? FLOAT | DISTANCE | STRING+;
+    attributeValue: (OP? INT | OP? FLOAT | DISTANCE | STRING+)?; //pode ser vazio, ver TaxiName index="0"
 
 
 
@@ -18,8 +18,8 @@ attributeValue: OP? INT | OP? FLOAT | DISTANCE | STRING+;
 
 airportElement: TAG_START_OPEN  AIRPORT attribute+ TAG_CLOSE (airportElements)* TAG_END_OPEN AIRPORT TAG_CLOSE;
 airportElements: (servicesElement | towerElement | runwayElement | startElement |
-                 runwayAliasElement | waypointElement | helipadElement | jetwayElement
-                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement);
+                 runwayAliasElement | waypointElement | helipadElement | jetwayElement |
+                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement | taxiwaySignElement);
 
 servicesElement :TAG_START_OPEN SERVICES TAG_CLOSE (servicesElements)* TAG_END_OPEN SERVICES TAG_CLOSE;
 servicesElements: fuelElement;

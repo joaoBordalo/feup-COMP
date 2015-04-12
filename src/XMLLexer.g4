@@ -52,8 +52,23 @@ fragment DIGIT: [0-9] ;
 fragment CHAR: [a-zA-Z];
 
 
-EQUALS: '=';
 
+STRING: (DIGIT | CHAR | SPECIAL_CHAR )+;
+
+SPECIAL_CHAR:   '/' |
+                '_' |
+                '[' |
+                ']' |
+                '&' |
+                '|' |
+                ';' |
+                '{' |
+                '}' |
+                '\\'|
+                '`' |
+                '-' |
+                '.';
+EQUALS: '=';
 QUOTES: '"';
 OP: ('+' | '-');
 DISTANCE: (FLOAT | INT) [mM];
@@ -61,7 +76,7 @@ DISTANCE: (FLOAT | INT) [mM];
 INT: [0-9]+;
 FLOAT: [0-9]* '.' [0-9]+;
 
-STRING: (DIGIT | CHAR | '/' | '_' )+;
+
 
 /*TAG
     :   '<' (~'>')* '>'
