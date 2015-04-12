@@ -1,10 +1,5 @@
 NOTAS:
 
-- Incluir a abertura do tago como parte do token da tag
-
-Exemplo: (como deve ser:) TOKEN: <nome_tag
-	 (em vez de:)   TOKEN1: <
-			TOKEN2: nome_tag
-			Exp: TOKEN1 TOKEN2
-
-mudei isso. acho que agora está o pretendido
+dudes, por alguma razao ta-se a passar com algumas cenas dos taxis, mas outras dao.
+cheira-me que ta a unificar com o token errado, mas nao consegui pescar qual ou porque.testem mesmo a mao.
+tirando isso o lexer e o parser ja reconhecem o que é suposto
