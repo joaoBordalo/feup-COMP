@@ -11,17 +11,17 @@ DeleteAirport
 
 O que interessa:
 
-Airport
-TaxiwayPoint
-TaxiwayParking
-TaxiName
+Airport -check
+TaxiwayPoint -check
+TaxiwayParking -check
+TaxiName -check
 TaxiwayPath
-Tower
-Services
-Runway
-RunwayAlias
-TaxiwaySign
-Waypoint
-Helipad
-Start
-Jetway
+Tower -check
+Services -check
+Runway -check
+RunwayAlias -check
+TaxiwaySign -check
+Waypoint -check
+Helipad -check
+Start -check
+Jetway -check
