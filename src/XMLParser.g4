@@ -19,7 +19,7 @@ attribute: attributeName EQUALS QUOTES attributeValue QUOTES;
 airportElement: TAG_START_OPEN  AIRPORT attribute+ TAG_CLOSE (airportElements)* TAG_END_OPEN AIRPORT TAG_CLOSE;
 airportElements: (servicesElement | towerElement | runwayElement | startElement |
                  runwayAliasElement | waypointElement | helipadElement | jetwayElement |
-                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement | taxiwaySignElement);
+                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement | taxiwaySignElement | COMMENT);
 
 servicesElement :TAG_START_OPEN SERVICES TAG_CLOSE (servicesElements)* TAG_END_OPEN SERVICES TAG_CLOSE;
 servicesElements: fuelElement;
