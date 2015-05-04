@@ -7,7 +7,7 @@ WS  :
 
 
 
-
+COMMENT: '<!--' .*? '-->';
 TAG_START_OPEN : '<' ;
 TAG_END_OPEN : '</' ;
 TAG_CLOSE :  '>' ;
@@ -81,8 +81,5 @@ FLOAT: [0-9]* '.' [0-9]+;
 /*TAG
     :   '<' (~'>')* '>'
     ;*/
-
-
-COMMENT: '<!--' .*? '-->';
 
 

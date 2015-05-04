@@ -5,7 +5,7 @@ options {      tokenVocab=XMLLexer; }
 
 //cenas: O_AIRPORT C_AIRPORT;
 document: xmlItems+ ;
-xmlItems: airportElement | COMMENT;
+xmlItems: airportElement | comment;
 
 attributeName: STRING;
 //tagName: STRING;
@@ -19,7 +19,9 @@ attribute: attributeName EQUALS QUOTES attributeValue QUOTES;
 airportElement: TAG_START_OPEN  AIRPORT attribute+ TAG_CLOSE (airportElements)* TAG_END_OPEN AIRPORT TAG_CLOSE;
 airportElements: (servicesElement | towerElement | runwayElement | startElement |
                  runwayAliasElement | waypointElement | helipadElement | jetwayElement |
-                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement | taxiwaySignElement | COMMENT);
+                 taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement | taxiwaySignElement | comment);
+
+comment: COMMENT;
 
 servicesElement :TAG_START_OPEN SERVICES TAG_CLOSE (servicesElements)* TAG_END_OPEN SERVICES TAG_CLOSE;
 servicesElements: fuelElement;
@@ -69,6 +71,9 @@ taxiwayPathElement: TAG_START_OPEN TAXIWAYPATH attribute+ TAG_EMPTY_CLOSE;
 taxiwaySignElement: TAG_START_OPEN TAXIWAYSIGN attribute+ TAG_EMPTY_CLOSE;
 
 
+/*TAG
+    :   '<' (~'>')* '>'
+    ;*/
 
 
 
