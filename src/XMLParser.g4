@@ -77,17 +77,5 @@ taxiwaySignElement: TAG_START_OPEN TAXIWAYSIGN attribute+ TAG_EMPTY_CLOSE;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //Parser init
 startpoint: document EOF;
