@@ -1,0 +1,1193 @@
+
+<xs:schema xmlns="dcs:scenario" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="dcs:scenario" attributeFormDefault="unqualified">
+<xs:include schemaLocation="common.xsd"/>
+<xs:element name="xway">
+<xs:complexType>
+<xs:attribute name="idr" type="xs:IDREF" use="required"/>
+</xs:complexType>
+<xs:keyref name="xWayRef" refer="xWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/airport/taxiways/taxiway/path/*/connectsTo/xway"/>
+<xs:field xpath="@idr"/>
+</xs:keyref>
+<xs:key name="xWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/airport/taxiways/taxiway"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="utilities">
+<xs:complexType>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="fuelFacility"/>
+<xs:element ref="batteryFacility"/>
+<xs:element ref="water"/>
+<xs:element ref="tower"/>
+</xs:choice>
+</xs:complexType>
+</xs:element>
+<xs:element name="batteryFacility">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="water">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+<xs:element ref="quantity"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="usefulArea">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="areaUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="agentType">
+<xs:complexType mixed="false">
+<xs:sequence>
+<xs:element ref="simulatedAgentType"/>
+<xs:element ref="realAgentType"/>
+<xs:element ref="physical"/>
+<xs:element ref="performance"/>
+<xs:element ref="payloadsLayout"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="tower">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+<xs:element ref="height"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="taxiways">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="taxiway" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="taxiway">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="surface"/>
+<xs:element ref="width"/>
+<xs:element ref="path"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="startpoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+<xs:element ref="connectsTo"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="simulatedAgentType">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="simTitle"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="shape">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="vertex" minOccurs="3" maxOccurs="unbounded"/>
+<xs:element ref="height"/>
+<xs:element ref="usefulArea"/>
+<xs:element ref="doors"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="scenario">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="bases"/>
+<xs:element ref="controllers"/>
+<xs:element ref="agentTypes"/>
+<xs:element ref="noFlyAreas"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="rway">
+<xs:complexType>
+<xs:attribute name="idr" type="xs:IDREF" use="required"/>
+</xs:complexType>
+<xs:keyref name="rWayRef" refer="rWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/airport/taxiways/taxiway/path/*/connectsTo/rway"/>
+<xs:field xpath="@idr"/>
+</xs:keyref>
+<xs:key name="rWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/airport/runways/runway"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="runways">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="runway" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="runway">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+<xs:element ref="length"/>
+<xs:element ref="width"/>
+<xs:element ref="surface"/>
+<xs:element ref="baseEnd"/>
+<xs:element ref="reciprocalEnd"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="reciprocalEnd">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="startpoint"/>
+<xs:element ref="heading"/>
+<xs:element ref="endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="vehicleType" type="xs:string"/>
+<xs:element name="realAgentType">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="category"/>
+<xs:element ref="vehicleType"/>
+<xs:element ref="manufacturer"/>
+<xs:element ref="model"/>
+<xs:element ref="variation"/>
+<xs:element ref="additionalInformation" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="path">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="startpoint"/>
+<xs:element ref="midpoint" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element ref="endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkingSpaces">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="parking" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="parking">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="airlines"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+<xs:element ref="connectsToTaxiway"/>
+</xs:sequence>
+<xs:attributeGroup ref="parkingTypeGroup"/>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="noFlyAreas">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="area" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="midpoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+<xs:element ref="connectsTo"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="helipads">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="helipad" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="helipad">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="surface"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="hangars">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="hangar" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="hangar">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="shape"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="fuelFacility">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="radius"/>
+<xs:element ref="quantity"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+<xs:attributeGroup ref="fuelTypeGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="frequency">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:decimal">
+<xs:attributeGroup ref="freqTypeGroup"/>
+<xs:attributeGroup ref="frequencyUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="frequencies">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="frequency" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="endpoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+<xs:element ref="connectsTo"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="doors">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="vertex" minOccurs="2" maxOccurs="unbounded"/>
+<xs:element ref="length"/>
+<xs:element ref="height"/>
+</xs:sequence>
+<xs:attributeGroup ref="doorTypeGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="controllers">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="controller" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="controller">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="area"/>
+<xs:element ref="frequencies"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+<xs:attributeGroup ref="baseIDGroup"/>
+<xs:attributeGroup ref="roleGroup"/>
+<xs:attributeGroup ref="requiredActionGroup"/>
+</xs:complexType>
+<xs:keyref name="ctrlrBaseRef" refer="ctrlrBaseKey">
+<xs:selector xpath="./scenario/controllers/controller"/>
+<xs:field xpath="@baseID"/>
+</xs:keyref>
+<xs:key name="ctrlrBaseKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="connectsTo">
+<xs:complexType>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="rway"/>
+<xs:element ref="xway"/>
+<xs:element ref="wway"/>
+<xs:element ref="rdway"/>
+<xs:element ref="qWay"/>
+</xs:choice>
+</xs:complexType>
+</xs:element>
+<xs:element name="bases">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="baseOfOperations" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="baseOfOperations">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="name"/>
+<xs:element ref="mobility"/>
+<xs:element ref="description"/>
+<xs:element ref="history"/>
+<xs:element ref="contactPerson"/>
+<xs:element ref="location"/>
+<xs:element ref="availability"/>
+<xs:element ref="airport" minOccurs="0"/>
+<xs:element ref="port" minOccurs="0"/>
+<xs:element ref="groundBase" minOccurs="0"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="baseEnd">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="startpoint"/>
+<xs:element ref="heading"/>
+<xs:element ref="endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="airport">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="name"/>
+<xs:element ref="description"/>
+<xs:element ref="contactPerson"/>
+<xs:element ref="location"/>
+<xs:element ref="ICAO"/>
+<xs:element ref="IATA"/>
+<xs:element ref="magVar"/>
+<xs:element ref="runways"/>
+<xs:element ref="helipads"/>
+<xs:element ref="taxiways"/>
+<xs:element ref="parkingSpaces"/>
+<xs:element ref="hangars"/>
+<xs:element ref="utilities"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="agentTypes">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="agentType" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="IATA" type="xs:string"/>
+<xs:element name="variation" type="xs:string"/>
+<xs:element name="simTitle" type="xs:string"/>
+<xs:element name="model" type="xs:string"/>
+<xs:element name="manufacturer" type="xs:string"/>
+<xs:element name="magVar" type="xs:double"/>
+<xs:element name="ICAO" type="xs:string"/>
+<xs:attributeGroup name="roleGroup">
+<xs:attribute name="role" use="required">
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:enumeration value="civilian"/>
+<xs:enumeration value="military"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:attribute>
+</xs:attributeGroup>
+<xs:attributeGroup name="requiredActionGroup">
+<xs:attribute name="requiredAction" type="xs:string" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="doorTypeGroup">
+<xs:attribute name="doorType" type="xs:string" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="parkingTypeGroup">
+<xs:attribute name="parkingType" type="xs:string" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="freqTypeGroup">
+<xs:attribute name="freqType" type="xs:string" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="designationGroup">
+<xs:attribute name="designation" type="xs:string" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="baseGroup">
+<xs:attribute name="base" type="xs:IDREF" use="required"/>
+</xs:attributeGroup>
+<xs:attributeGroup name="baseIDGroup">
+<xs:attribute name="baseID" type="xs:IDREF" use="required"/>
+</xs:attributeGroup>
+<xs:element name="wingspan">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="wingArea">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="areaUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="emptyWeight">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="massUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxPayload">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="massUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxFuel">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="volumeUnitGroup"/>
+<xs:attributeGroup ref="fuelTypeGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxBattery">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="energyUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="physical">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="length"/>
+<xs:element ref="height"/>
+<xs:element ref="emptyWeight"/>
+<xs:element ref="maxPayload"/>
+<xs:element ref="nEngines"/>
+<xs:choice>
+<xs:element ref="maxFuel"/>
+<xs:element ref="maxBattery"/>
+</xs:choice>
+<xs:choice>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>planes</xs:documentation>
+</xs:annotation>
+<xs:element ref="wingspan"/>
+<xs:element ref="wingArea"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>cars</xs:documentation>
+</xs:annotation>
+<xs:element ref="width"/>
+<xs:element ref="nWheels"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Water</xs:documentation>
+</xs:annotation>
+<xs:element ref="beam"/>
+<xs:element ref="rudderArea" minOccurs="0"/>
+<xs:element ref="anchorLength" minOccurs="0"/>
+<xs:element ref="mooringLines" minOccurs="0"/>
+<xs:choice>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Boats</xs:documentation>
+</xs:annotation>
+<xs:element ref="maxDraft"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Subs</xs:documentation>
+</xs:annotation>
+<xs:element ref="seaplaneArea" minOccurs="0"/>
+<xs:element ref="waterTanks" minOccurs="0"/>
+</xs:sequence>
+</xs:choice>
+</xs:sequence>
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="performance">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="cruiseSpeed"/>
+<xs:element ref="maxSpeed"/>
+<xs:element ref="range"/>
+<xs:choice>
+<xs:element ref="fuelFlow"/>
+<xs:element ref="energyFlow"/>
+</xs:choice>
+<xs:element ref="dragCoefficient"/>
+<xs:choice>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>planes</xs:documentation>
+</xs:annotation>
+<xs:element ref="stallSpeed"/>
+<xs:element ref="climbRate"/>
+<xs:element ref="ceiling"/>
+<xs:element ref="requiredRunwayLength"/>
+<xs:element ref="maxTakeoffWeight"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Cars</xs:documentation>
+</xs:annotation>
+<xs:element ref="maxAttackAngle"/>
+<xs:element ref="min90DegTurnRadius"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Boat</xs:documentation>
+</xs:annotation>
+<xs:element ref="min90DegTurnRadius"/>
+</xs:sequence>
+<xs:sequence>
+<xs:annotation>
+<xs:documentation>Subs</xs:documentation>
+</xs:annotation>
+<xs:element ref="maxUnderwaterSpeed"/>
+<xs:element ref="maxVerticalVelocity"/>
+<xs:element ref="maxDepth"/>
+<xs:element ref="min90DegTurnRadius"/>
+</xs:sequence>
+</xs:choice>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="payloadsLayout">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="payloadInfo" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxTakeoffWeight">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="massUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="requiredRunwayLength">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="cruiseSpeed">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="velocityUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxSpeed">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="velocityUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="stallSpeed">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="velocityUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="range">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="ceiling">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="climbRate">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="velocityUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxCargo">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="massUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="payloadInfo">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="relativeLocation"/>
+<xs:element ref="dimensions"/>
+<xs:element ref="maxCargo"/>
+</xs:sequence>
+<xs:attribute name="name" use="required"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="port">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="name"/>
+<xs:element ref="description"/>
+<xs:element ref="contactPerson"/>
+<xs:element ref="location"/>
+<xs:element ref="magVar"/>
+<xs:element ref="waterways"/>
+<xs:element ref="quays"/>
+<xs:element ref="berths"/>
+<xs:element ref="utilities"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="groundBase">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="name"/>
+<xs:element ref="description"/>
+<xs:element ref="contactPerson"/>
+<xs:element ref="location"/>
+<xs:element ref="magVar"/>
+<xs:element ref="roads"/>
+<xs:element ref="parkingsGround"/>
+<xs:element ref="garages"/>
+<xs:element ref="utilities"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkingSpacesGround">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="parkingSpace" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkingSpace">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="parkStartpoint"/>
+<xs:element ref="parkEndpoint"/>
+<xs:element ref="width"/>
+</xs:sequence>
+<xs:attributeGroup ref="parkingTypeGroup"/>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkStartpoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkEndpoint">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="category">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:string"/>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxRudderAngle">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="angleUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="parkingsGround">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="parkingSpacesGround" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="garages">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="garage" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="garage">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="shape"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="nEngines">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:int">
+<xs:attributeGroup ref="engineTypeGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="min90DegTurnRadius">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="depth">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="wway">
+<xs:complexType>
+<xs:attribute name="idr" type="xs:IDREF" use="required"/>
+</xs:complexType>
+<xs:keyref name="wWayRef" refer="wWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/port/waterways/waterway/path/*/connectsTo/wway"/>
+<xs:field xpath="@idr"/>
+</xs:keyref>
+<xs:key name="wWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/port/waterways/waterway"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="qWay">
+<xs:complexType>
+<xs:attribute name="idr" use="required"/>
+</xs:complexType>
+<xs:keyref name="quayWayRef" refer="quayWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/port/quays/quay/path/*/connectsTo/qway"/>
+<xs:field xpath="@idr"/>
+</xs:keyref>
+<xs:key name="quayWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/port/quays/quay"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="rdway">
+<xs:complexType>
+<xs:attribute name="idr" type="xs:IDREF" use="required"/>
+</xs:complexType>
+<xs:keyref name="roadWayRef" refer="roadWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/groundBase/roads/road/path/*/connectsTo/rdway"/>
+<xs:field xpath="@idr"/>
+</xs:keyref>
+<xs:key name="roadWayKey">
+<xs:selector xpath="./scenario/bases/baseOfOperations/groundBase/roads/road"/>
+<xs:field xpath="@id"/>
+</xs:key>
+</xs:element>
+<xs:element name="roads">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="road" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="road">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="surface"/>
+<xs:element ref="width"/>
+<xs:element ref="totalNumberOfLanes"/>
+<xs:element ref="trafficIsRightHand"/>
+<xs:element ref="path"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+<xs:attribute name="name"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="totalNumberOfLanes">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:int">
+<xs:attribute name="reverseLanes" use="required">
+<xs:simpleType>
+<xs:restriction base="xs:int">
+<xs:minInclusive value="0"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:attribute>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="trafficIsRightHand" type="xs:boolean"/>
+<xs:element name="waterways">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="waterway" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="quays">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="quay" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="berths">
+<xs:complexType>
+<xs:choice minOccurs="0" maxOccurs="unbounded">
+<xs:element ref="mooringSpace"/>
+<xs:element ref="slipway"/>
+<xs:element ref="dryDock"/>
+</xs:choice>
+</xs:complexType>
+</xs:element>
+<xs:element name="waterway">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="width"/>
+<xs:element ref="depth"/>
+<xs:element ref="path"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="quay">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="width"/>
+<xs:element ref="surface"/>
+<xs:element ref="path"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+<xs:attributeGroup ref="quayTypeGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="mooringSpace">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="boatType"/>
+<xs:element ref="depth"/>
+<xs:element ref="maxBoatLength"/>
+<xs:element ref="mooringWidth"/>
+<xs:element ref="coordinates"/>
+<xs:element ref="mooresTo" maxOccurs="unbounded"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxBoatLength">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="mooringWidth">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="mooresTo">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:IDREF">
+<xs:attributeGroup ref="mooringSideGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="slipway">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="boatType"/>
+<xs:element ref="length"/>
+<xs:element ref="width"/>
+<xs:element ref="angle"/>
+<xs:element ref="surface"/>
+<xs:element ref="maxWeight"/>
+<xs:element ref="coordinates"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="dryDock">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="designation"/>
+<xs:element ref="description"/>
+<xs:element ref="boatType"/>
+<xs:element ref="length"/>
+<xs:element ref="width"/>
+<xs:element ref="depth"/>
+<xs:element ref="height"/>
+<xs:element ref="dryDockVolume"/>
+<xs:element ref="waterFlow"/>
+<xs:element ref="coordinates"/>
+</xs:sequence>
+<xs:attributeGroup ref="idGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="angle">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="angleUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxWeight">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="massUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="airlines">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="airline" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="dryDockVolume">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="volumeUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="waterFlow">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="volumeFlowUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxUnderwaterSpeed">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="velocityUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="nWheels">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:int">
+<xs:attribute name="withTraction" use="required">
+<xs:simpleType>
+<xs:restriction base="xs:int">
+<xs:minInclusive value="0"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:attribute>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="beam">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="rudderArea">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="areaUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="anchorLength">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attribute name="nAnchors" type="xs:int" use="required"/>
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="maxDraft">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="mooringLines">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attribute name="nLines" type="xs:int" use="required"/>
+<xs:attributeGroup ref="lengthUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="seaplaneArea">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="areaUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="waterTanks">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attribute name="nTanks" type="xs:int" use="required"/>
+<xs:attributeGroup ref="volumeUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="boatType">
+<xs:complexType>
+<xs:attributeGroup ref="boatTypeGroup"/>
+</xs:complexType>
+</xs:element>
+<xs:element name="airline" type="xs:string"/>
+<xs:element name="maxAttackAngle">
+<xs:complexType>
+<xs:simpleContent>
+<xs:extension base="xs:double">
+<xs:attributeGroup ref="angleUnitGroup"/>
+</xs:extension>
+</xs:simpleContent>
+</xs:complexType>
+</xs:element>
+<xs:element name="connectsToTaxiway">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="coordinates"/>
+</xs:sequence>
+<xs:attribute name="xway" type="xs:IDREF" use="required"/>
+</xs:complexType>
+</xs:element>
+</xs:schema>

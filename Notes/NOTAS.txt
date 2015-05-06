@@ -1,5 +1,2 @@
 NOTAS:
 
-dudes, por alguma razao ta-se a passar com algumas cenas dos taxis, mas outras dao.
-cheira-me que ta a unificar com o token errado, mas nao consegui pescar qual ou porque.testem mesmo a mao.
-tirando isso o lexer e o parser ja reconhecem o que é suposto
