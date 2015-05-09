@@ -128,24 +128,23 @@ public class Listener extends XMLParserBaseListener {
 					break;
 					
 				case "alt":
-				//TODO dava jeito nao ignorar o WS no atributo do alt, para poder separar
+		
 					boolean def = false;
 					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
-					if(aCtx.attributeValue().getText().split(" ").length==2)
+					
+					//ultimo char so attvalue
+					Character altUnits = new Character (aCtx.attributeValue().getText().charAt(aCtx.attributeValue().getText().length()-1));
+					if(!altUnits.equals('F') && !altUnits.equals('M'))
 					{
-						//System.out.println("entrei no case do alt!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						String[] attValue = aCtx.attributeValue().getText().split(" ");
-						
-						if(!attValue[1].equals("M") && !attValue[1].equals("F"))
-						{
 							System.out.println("warning: invalid alt units in airport. using default (M)");
-							def=true;							
-						}
+							def=true;								
 					}
 					
 					if(def==true)
 					{
-						m.put(aCtx.attributeName().getText(), "M");
+						//valor antigo com as unidades por defeito M
+						String value = new String(aCtx.attributeValue().getText().substring(0, aCtx.attributeValue().getText().length()-1)+"M");
+						m.put(aCtx.attributeName().getText(), value);
 					}
 					else
 					{
@@ -169,22 +168,18 @@ public class Listener extends XMLParserBaseListener {
 					
 				case "airportTestRadius":
 					
-					if(aCtx.attributeValue().getText().split(" ").length!=2)
+					//ir buscar ultimo char
+					Character testRadiusUnits = new Character(aCtx.attributeValue().getText().charAt(aCtx.attributeValue().getText().length()-1));
+					if(!testRadiusUnits.equals('M') && !testRadiusUnits.equals('G') && !testRadiusUnits.equals('N'))
 					{
-						System.out.println("Wrong ariportTestRadius format. use <float (M|G|N)>");
+						System.out.println("Wrong ariportTestRadius format. use <float(M|G|N)>");
 						return;
 					}
 					else {
-						String[] attValue = aCtx.attributeValue().getText().split(" ");
-						
-						if(!attValue[1].equals("M") && !attValue[1].equals("F") && !attValue[1].equals("N"))
-						{
-							System.out.println("Wrong airportTestRadius unit. used: " + attValue[1]
-												+ " expecting 'M' or 'F' or 'N'");
-						}	
+						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 					}
 					
-					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
+					
 					
 					break;
 					
