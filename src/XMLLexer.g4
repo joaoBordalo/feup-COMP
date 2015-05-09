@@ -23,21 +23,16 @@ TAXINAME:'TaxiName';
 TAXIWAYPATH:'TaxiwayPath';
 TOWER:'Tower';
 SERVICES:'Services';
-COM: 'Com';
 RUNWAY:'Runway';
 RUNWAYALIAS:'RunwayAlias'; //? para que é este?
 
-APPROACH: 'Approach';
 APPROACHLEGS: 'ApproachLegs';
 LEG: 'Leg';
 MISSEDAPPROACHLEGS: 'MissedApproachLegs';
 TRANSITION: 'Transition';
 TRANSITIONLEGS: 'TransitionLegs';
 
-WAYPOINT:'Waypoint';
 HELIPAD:'Helipad';
-START:'Start';
-JETWAY:'Jetway';
 FUEL:'Fuel';
 MARKINGS:'Markings';
 LIGHTS:'Lights';
@@ -54,12 +49,19 @@ SCENERYOBJECT:'SceneryObject';
 LIBRARYOBJECT:'LibraryObject';
 
 //Ignore:
+APPROACH: ('<Approach' .*? '>' .*? '</Approach>')->skip; //new
 APRONS: ('<Aprons>' .*? '</Aprons>') ->skip;
+JETWAY:('<Jetway>' .*? '</Jetway>') ->skip; //new
 APRONEDGELIGHTS: ('<ApronEdgeLights>' .*? '</ApronEdgeLights>') ->skip;
 TAXIWAYSIGN:('<TaxiwaySign' .*? '/>') ->skip;
 BOUNDARYFENCE: ('<BoundaryFence' .*? '>' .*? '</BoundaryFence>')->skip;
+WAYPOINT:('<Waypoint' .*? '>' .*? '</Waypoint>')->skip; //new
+NDB: ('<Ndb' .*? '>' .*? '</Ndb>')->skip; //new
+START:('<Start' .*? '/>')->skip; //new
+BLASTFENCE: ('<BlastFence' .*? '>' .*? '</BlastFence>')->skip; //new
+DELETEAIRPORT: ('<DeleteAirport' .*? '>' .*? '</DeleteAirport>')->skip;//new
+COM: ('<Com' .*? '/>')->skip; //new
 
-//APPROACH: ('<Approach ' .* '>' .*? '</Approach>') ->skip;
 
 fragment DIGIT: [0-9] ;
 fragment CHAR: [a-zA-Z];

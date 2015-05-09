@@ -17,12 +17,12 @@ attribute: attributeName EQUALS QUOTES attributeValue QUOTES;
 
 
 airportElement: TAG_START_OPEN  AIRPORT attribute+ TAG_CLOSE (airportElements)* TAG_END_OPEN AIRPORT TAG_CLOSE;
-airportElements: (servicesElement | towerElement | runwayElement | startElement | comElement |
-                 runwayAliasElement | waypointElement | helipadElement | jetwayElement |
+airportElements: (servicesElement | towerElement | runwayElement  |
+                 runwayAliasElement | helipadElement  |
                  taxiwayPointElement | taxiwayParkingElement | taxiNameElement | taxiwayPathElement |
-                 approachElement | comment
+                 comment
                  //Ignoring:
-                 //| apronsElement | apronEdgeLightsElement | boundaryFenceElement | approachElement | taxiwaySignElement
+                 //| comElement| startElement| jetwayElement | waypointElement | apronsElement | apronEdgeLightsElement | boundaryFenceElement | approachElement | taxiwaySignElement
                  );
 
 comment: COMMENT;
@@ -31,7 +31,7 @@ servicesElement :TAG_START_OPEN SERVICES TAG_CLOSE (servicesElements)* TAG_END_O
 servicesElements: fuelElement;
 fuelElement: TAG_START_OPEN FUEL attribute+ TAG_EMPTY_CLOSE;
 
-towerElement: TAG_START_OPEN TOWER  attribute+ TAG_CLOSE TAG_END_OPEN TOWER TAG_CLOSE;
+towerElement: TAG_START_OPEN TOWER  attribute* TAG_EMPTY_CLOSE;
 
 runwayElement: TAG_START_OPEN RUNWAY  attribute+ TAG_CLOSE runwayElements* TAG_END_OPEN RUNWAY TAG_CLOSE;
 runwayElements: markingsElement | lightsElement | offsetThresholdElement | approachLightsElement | vasiElement | ilsElement;
@@ -47,24 +47,12 @@ ilsElements: glideSlopeElement | dmeElement;
 glideSlopeElement: TAG_START_OPEN GLIDESLOPE attribute+ TAG_EMPTY_CLOSE;
 dmeElement: TAG_START_OPEN DME attribute+ TAG_EMPTY_CLOSE;
 
-startElement: TAG_START_OPEN START attribute+ TAG_EMPTY_CLOSE;
-comElement: TAG_START_OPEN COM attribute+ TAG_EMPTY_CLOSE;
-
 runwayAliasElement: TAG_START_OPEN RUNWAYALIAS attribute+ TAG_EMPTY_CLOSE;
 
-waypointElement: TAG_START_OPEN WAYPOINT attribute+ TAG_CLOSE routeElement*  TAG_END_OPEN WAYPOINT TAG_CLOSE;
 routeElement: TAG_START_OPEN ROUTE attribute+ TAG_CLOSE routeElements*  TAG_END_OPEN ROUTE TAG_CLOSE;
 routeElements: nextElement | previousElement;
 nextElement: TAG_START_OPEN NEXT attribute+ TAG_EMPTY_CLOSE;
 previousElement:TAG_START_OPEN PREVIOUS attribute+ TAG_EMPTY_CLOSE;
-
-approachElement: TAG_START_OPEN APPROACH attribute+ TAG_CLOSE approachElements* TAG_END_OPEN APPROACH TAG_CLOSE;
-approachElements: approachLegsElement | missedApproachLegsElement | transitionElement;
-approachLegsElement: TAG_START_OPEN APPROACHLEGS TAG_CLOSE legElement* TAG_END_OPEN APPROACHLEGS TAG_CLOSE;
-missedApproachLegsElement: TAG_START_OPEN MISSEDAPPROACHLEGS TAG_CLOSE legElement* TAG_END_OPEN MISSEDAPPROACHLEGS TAG_CLOSE;
-transitionElement: TAG_START_OPEN TRANSITION attribute+ TAG_CLOSE transitionLegsElement* TAG_END_OPEN TRANSITION TAG_CLOSE;
-transitionLegsElement: TAG_START_OPEN TRANSITIONLEGS TAG_CLOSE legElement* TAG_END_OPEN TRANSITIONLEGS TAG_CLOSE;
-legElement:  TAG_START_OPEN LEG attribute+ TAG_EMPTY_CLOSE;
 
 
 helipadElement: TAG_START_OPEN HELIPAD attribute+ TAG_EMPTY_CLOSE;
@@ -90,7 +78,20 @@ apronsElement:  APRONS;
 apronEdgeLightsElement: APRONEDGELIGHTS;
 boundaryFenceElement: BOUNDARYFENCE;
 //approachElement: APPROACH;
-taxiwaySignElement: TAG_START_OPEN TAXIWAYSIGN attribute+ TAG_EMPTY_CLOSE;*/
+taxiwaySignElement: TAG_START_OPEN TAXIWAYSIGN attribute+ TAG_EMPTY_CLOSE;
+waypointElement: TAG_START_OPEN WAYPOINT attribute+ TAG_CLOSE routeElement*  TAG_END_OPEN WAYPOINT TAG_CLOSE;
+
+approachElement: TAG_START_OPEN APPROACH attribute+ TAG_CLOSE approachElements* TAG_END_OPEN APPROACH TAG_CLOSE;
+approachElements: approachLegsElement | missedApproachLegsElement | transitionElement;
+approachLegsElement: TAG_START_OPEN APPROACHLEGS TAG_CLOSE legElement* TAG_END_OPEN APPROACHLEGS TAG_CLOSE;
+missedApproachLegsElement: TAG_START_OPEN MISSEDAPPROACHLEGS TAG_CLOSE legElement* TAG_END_OPEN MISSEDAPPROACHLEGS TAG_CLOSE;
+transitionElement: TAG_START_OPEN TRANSITION attribute+ TAG_CLOSE transitionLegsElement* TAG_END_OPEN TRANSITION TAG_CLOSE;
+transitionLegsElement: TAG_START_OPEN TRANSITIONLEGS TAG_CLOSE legElement* TAG_END_OPEN TRANSITIONLEGS TAG_CLOSE;
+legElement:  TAG_START_OPEN LEG attribute+ TAG_EMPTY_CLOSE;
+
+startElement: TAG_START_OPEN START attribute+ TAG_EMPTY_CLOSE;
+comElement: TAG_START_OPEN COM attribute+ TAG_EMPTY_CLOSE;
+*/
 
 /*TAG
     :   '<' (~'>')* '>'
