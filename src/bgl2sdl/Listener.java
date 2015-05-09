@@ -37,6 +37,7 @@ public class Listener extends XMLParserBaseListener {
 	Map<String, Map<String, String>> offsetThresholdAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> approachLighstsAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> vasiAtts = new HashMap<String, Map<String, String>>();
+	Map<String, Map<String, String>> glideSlopeAtts = new HashMap<String, Map<String, String>>();
 	
 	Map<String, Integer> airportAttNames; // para verificar se os nomes dos atributos sao corretos
 	Map<String, Integer> fuelAttNames;
@@ -49,6 +50,7 @@ public class Listener extends XMLParserBaseListener {
 	Vector<String> vasiAttNames;
 	Vector<String> vasiTypeValues;
 	Vector<String> ilsAttNames;
+	Vector<String> glideSlopeAttNames;
 	int airportIndex = 0;
 	int fuelIndex =0;
 	int actualAirportIndex=0;
@@ -60,6 +62,7 @@ public class Listener extends XMLParserBaseListener {
 	int actualApproachLightsIndex=0;
 	int actualVasiIndex=0;
 	int actualIlsIndex=0;
+	int actualGlideSlopeIndex=0;
 	
 	
 	
@@ -161,6 +164,12 @@ public class Listener extends XMLParserBaseListener {
 		vasiTypeValues.add("BALL");
 		vasiTypeValues.add("APAP");
 		vasiTypeValues.add("PANELS");
+		
+		glideSlopeAttNames.add("lat");
+		glideSlopeAttNames.add("lon");
+		glideSlopeAttNames.add("alt");
+		glideSlopeAttNames.add("pitch");
+		glideSlopeAttNames.add("range");
 	}
 	
 	@Override public void exitAttribute(@NotNull XMLParser.AttributeContext ctx) 
@@ -463,7 +472,7 @@ public class Listener extends XMLParserBaseListener {
 
 	@Override public void exitTowerElement(@NotNull XMLParser.TowerElementContext ctx) { 
 		
-		//TODO METER REQUIREDCOUNTER AQUI!
+		int requiredCounter=0;
 		
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		for(XMLParser.AttributeContext tCtx : ctx.attribute())
@@ -492,6 +501,7 @@ public class Listener extends XMLParserBaseListener {
 					}
 					
 					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());		
+					requiredCounter++;
 					break;
 					
 				case "lon":
@@ -508,6 +518,7 @@ public class Listener extends XMLParserBaseListener {
 						
 					}				
 					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());
+					requiredCounter++;
 					break;
 					
 				case "alt":
@@ -532,6 +543,7 @@ public class Listener extends XMLParserBaseListener {
 					else
 					{
 						m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());
+						requiredCounter++;
 					}
 	
 				break;
@@ -552,9 +564,13 @@ public class Listener extends XMLParserBaseListener {
 			
 			
 		}
-		
-		towerAtts.put("TOWER"+actualTowerIndex, m);
-		airportElems.put("TOWER"+actualTowerIndex, "AIRPORT"+actualAirportIndex);
+		if(requiredCounter != 3){
+			System.out.println("Wrong number of required attributes. must be 3: lat, lon, alt");
+			return;
+		}
+			towerAtts.put("TOWER"+actualTowerIndex, m);
+			airportElems.put("TOWER"+actualTowerIndex, "AIRPORT"+actualAirportIndex);
+
 		
 		
 	}
@@ -1627,7 +1643,10 @@ public class Listener extends XMLParserBaseListener {
 					break;
 					
 				case "range":
-					break;//TODO falta fazer
+					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
+					requiredCounter++;
+					
+					break;//TODO cofirmar ^ (assumo que recebe sempre um numero, ou numero+N)
 					
 				case "magvar":
 					
@@ -1704,6 +1723,12 @@ public class Listener extends XMLParserBaseListener {
 
 
 		}
+		//TODO confirmar: se nao tiver range, adiciono o default 27N
+		if(!m.containsKey("range")){
+			System.out.println("ILS range not defined. Put default 27N");
+			m.put("range", "27N");
+			requiredCounter++;
+		}
 		if(requiredCounter!=8)
 		{
 			System.out.println("Wrong number of required attributes. must be 8: lat, lon, alt, heading, frequency, end, magvar, ident");
@@ -1718,4 +1743,127 @@ public class Listener extends XMLParserBaseListener {
 	@Override public void enterIlsElements(@NotNull XMLParser.IlsElementsContext ctx) { }
 	
 	@Override public void exitIlsElements(@NotNull XMLParser.IlsElementsContext ctx) { }
+	
+	@Override public void enterGlideSlopeElement(@NotNull XMLParser.GlideSlopeElementContext ctx) 
+	{ 
+		actualGlideSlopeIndex++;
+	}
+
+	@Override public void exitGlideSlopeElement(@NotNull XMLParser.GlideSlopeElementContext ctx) 
+	{ 
+		int requiredCounter = 0;
+
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		for(XMLParser.AttributeContext gsCtx : ctx.attribute())
+		{
+
+			String attName=gsCtx.attributeName().getText();
+
+			//validar nome de atributo
+			if(glideSlopeAttNames.contains(attName))
+			{
+
+				switch (attName) {
+				
+				case "lat":
+					
+					if(gsCtx.attributeValue().getText().split("-").length==3)
+					{
+						String[] attValue = gsCtx.attributeValue().getText().split("-");
+						
+						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
+						{
+							System.out.println("invalid " + attName + " value : " + attValue[0]);
+							return;
+						}
+						
+					}
+					
+					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+					requiredCounter++;
+					break;
+					
+				case "lon":
+					
+					if(gsCtx.attributeValue().getText().split("-").length==3)
+					{
+						String[] attValue = gsCtx.attributeValue().getText().split("-");
+						
+						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
+						{
+							System.out.println("invalid " + attName + " value : " + attValue[0]);
+							return;
+						}
+						
+					}				
+					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+					requiredCounter++;
+					break;
+					
+				case "alt":
+		
+					boolean def = false;
+					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
+					
+					//ultimo char so attvalue
+					Character altUnits = new Character (gsCtx.attributeValue().getText().charAt(gsCtx.attributeValue().getText().length()-1));
+					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					{
+							System.out.println("warning: invalid alt units in ils. using default (M)");
+							def=true;								
+					}
+					
+					if(def==true)
+					{
+						//valor antigo com as unidades por defeito M
+						String value = new String(gsCtx.attributeValue().getText().substring(0, gsCtx.attributeValue().getText().length()-1)+"M");
+						m.put(gsCtx.attributeName().getText(), value);
+						requiredCounter++;
+					}
+					else
+					{
+						m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+						requiredCounter++;
+					}
+	
+				break;
+				case "pitch":
+					
+					Float attVal = Float.parseFloat(gsCtx.attributeValue().getText());
+					if(attVal<0 || attVal>360)
+					{
+						System.out.println("Wrong pitch value in glide scope. must be non negative and not greater than 360");
+						return;
+					}
+					else
+					{
+						m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+						requiredCounter++;
+					}
+				break;
+				case "range":
+					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+					requiredCounter++;
+					
+					break; 	
+				default:
+					break;
+				}
+			}
+		}
+		
+		if(!m.containsKey("range")){
+			System.out.println("GlideSlope range not defined. Put default 27N");
+			m.put("range", "27N");
+			requiredCounter++;
+		}
+		
+		if(requiredCounter!=5)
+		{
+			System.out.println("Wrong number of arguments in GlideSlope. must be 5: "+ glideSlopeAttNames);
+		}
+		
+		glideSlopeAtts.put("GLIDESLOPE"+actualGlideSlopeIndex, m);
+		runwayElems.put("GLIDESLOPE"+actualGlideSlopeIndex, "RUNWAY"+actualRunwayIndex);
+	}
 }
