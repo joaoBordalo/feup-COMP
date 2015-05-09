@@ -1,6 +1,5 @@
 package gen;
-
-// Generated from C:/Users/Pedro Faria/IdeaProjects/feup-COMP/src\XMLLexer.g4 by ANTLR 4.5
+// Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLLexer.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
