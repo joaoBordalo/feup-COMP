@@ -23,9 +23,17 @@ TAXINAME:'TaxiName';
 TAXIWAYPATH:'TaxiwayPath';
 TOWER:'Tower';
 SERVICES:'Services';
+COM: 'Com';
 RUNWAY:'Runway';
-RUNWAYALIAS:'RunwayAlias';
-TAXIWAYSIGN:'TaxiwaySign';
+RUNWAYALIAS:'RunwayAlias'; //? para que é este?
+
+APPROACH: 'Approach';
+APPROACHLEGS: 'ApproachLegs';
+LEG: 'Leg';
+MISSEDAPPROACHLEGS: 'MissedApproachLegs';
+TRANSITION: 'Transition';
+TRANSITIONLEGS: 'TransitionLegs';
+
 WAYPOINT:'Waypoint';
 HELIPAD:'Helipad';
 START:'Start';
@@ -45,8 +53,13 @@ PREVIOUS:'Previous';
 SCENERYOBJECT:'SceneryObject';
 LIBRARYOBJECT:'LibraryObject';
 
+//Ignore:
+APRONS: ('<Aprons>' .*? '</Aprons>') ->skip;
+APRONEDGELIGHTS: ('<ApronEdgeLights>' .*? '</ApronEdgeLights>') ->skip;
+TAXIWAYSIGN:('<TaxiwaySign' .*? '/>') ->skip;
+BOUNDARYFENCE: ('<BoundaryFence' .*? '>' .*? '</BoundaryFence>')->skip;
 
-
+//APPROACH: ('<Approach ' .* '>' .*? '</Approach>') ->skip;
 
 fragment DIGIT: [0-9] ;
 fragment CHAR: [a-zA-Z];
@@ -67,6 +80,7 @@ SPECIAL_CHAR:   '/' |
                 '\\'|
                 '`' |
                 '-' |
+                '+' |
                 '.';
 EQUALS: '=';
 QUOTES: '"';

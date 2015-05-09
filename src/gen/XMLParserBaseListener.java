@@ -1,5 +1,7 @@
-// Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
 package gen;
+
+// Generated from C:/Users/Pedro Faria/IdeaProjects/feup-COMP/src\XMLParser.g4 by ANTLR 4.5
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -304,6 +306,18 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterComElement(@NotNull XMLParser.ComElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComElement(@NotNull XMLParser.ComElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -371,6 +385,90 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPreviousElement(@NotNull XMLParser.PreviousElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterApproachElement(@NotNull XMLParser.ApproachElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitApproachElement(@NotNull XMLParser.ApproachElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterApproachElements(@NotNull XMLParser.ApproachElementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitApproachElements(@NotNull XMLParser.ApproachElementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterApproachLegsElement(@NotNull XMLParser.ApproachLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitApproachLegsElement(@NotNull XMLParser.ApproachLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMissedApproachLegsElement(@NotNull XMLParser.MissedApproachLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMissedApproachLegsElement(@NotNull XMLParser.MissedApproachLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTransitionElement(@NotNull XMLParser.TransitionElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTransitionElement(@NotNull XMLParser.TransitionElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTransitionLegsElement(@NotNull XMLParser.TransitionLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTransitionLegsElement(@NotNull XMLParser.TransitionLegsElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLegElement(@NotNull XMLParser.LegElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLegElement(@NotNull XMLParser.LegElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -479,18 +577,6 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

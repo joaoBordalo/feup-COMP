@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.antlr.v4.misc.OrderedHashMap;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import gen.*;
@@ -79,6 +80,7 @@ public class Listener extends XMLParserBaseListener {
 	@Override 
 	public void exitAirportElement(@NotNull XMLParser.AirportElementContext ctx) 
 	{ 
+	
 		int counter= 0;
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		for(XMLParser.AttributeContext aCtx : ctx.attribute())
@@ -211,6 +213,7 @@ public class Listener extends XMLParserBaseListener {
 			}
 			else
 			{
+				
 				System.out.println("Wrong attribute name. used: "+ aCtx.attributeName().getText());
 				return;
 			}
