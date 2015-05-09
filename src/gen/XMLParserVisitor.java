@@ -1,4 +1,3 @@
-package gen;
 // Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -150,29 +149,11 @@ public interface XMLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDmeElement(@NotNull XMLParser.DmeElementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#comElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitComElement(@NotNull XMLParser.ComElementContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link XMLParser#runwayAliasElement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XMLParser#routeElement}.
 	 * @param ctx the parse tree
@@ -197,48 +178,6 @@ public interface XMLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPreviousElement(@NotNull XMLParser.PreviousElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#approachElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApproachElement(@NotNull XMLParser.ApproachElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#approachElements}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApproachElements(@NotNull XMLParser.ApproachElementsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#approachLegsElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApproachLegsElement(@NotNull XMLParser.ApproachLegsElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#missedApproachLegsElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMissedApproachLegsElement(@NotNull XMLParser.MissedApproachLegsElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#transitionElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransitionElement(@NotNull XMLParser.TransitionElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#transitionLegsElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransitionLegsElement(@NotNull XMLParser.TransitionLegsElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#legElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLegElement(@NotNull XMLParser.LegElementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XMLParser#helipadElement}.
 	 * @param ctx the parse tree

@@ -1,5 +1,4 @@
 // Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
-package gen;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -239,16 +238,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 */
 	void exitDmeElement(@NotNull XMLParser.DmeElementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link XMLParser#runwayAliasElement}.
 	 * @param ctx the parse tree
 	 */
@@ -258,16 +247,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link XMLParser#routeElement}.
 	 * @param ctx the parse tree
@@ -398,16 +377,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#taxiwaySignElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#taxiwaySignElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link XMLParser#startpoint}.
 	 * @param ctx the parse tree

@@ -1,5 +1,5 @@
 // Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
-package gen;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -292,18 +292,6 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStartElement(@NotNull XMLParser.StartElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStartElement(@NotNull XMLParser.StartElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -311,18 +299,6 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWaypointElement(@NotNull XMLParser.WaypointElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWaypointElement(@NotNull XMLParser.WaypointElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -479,18 +455,6 @@ public class XMLParserBaseListener implements XMLParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

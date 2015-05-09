@@ -1,5 +1,4 @@
 // Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
-package gen;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -150,23 +149,11 @@ public interface XMLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDmeElement(@NotNull XMLParser.DmeElementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link XMLParser#runwayAliasElement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XMLParser#routeElement}.
 	 * @param ctx the parse tree
@@ -245,12 +232,6 @@ public interface XMLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link XMLParser#taxiwaySignElement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTaxiwaySignElement(@NotNull XMLParser.TaxiwaySignElementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XMLParser#startpoint}.
 	 * @param ctx the parse tree

@@ -1,4 +1,3 @@
-package gen;
 // Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -239,26 +238,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 */
 	void exitDmeElement(@NotNull XMLParser.DmeElementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#startElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStartElement(@NotNull XMLParser.StartElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#comElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterComElement(@NotNull XMLParser.ComElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#comElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitComElement(@NotNull XMLParser.ComElementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link XMLParser#runwayAliasElement}.
 	 * @param ctx the parse tree
 	 */
@@ -268,16 +247,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#waypointElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitWaypointElement(@NotNull XMLParser.WaypointElementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link XMLParser#routeElement}.
 	 * @param ctx the parse tree
@@ -318,76 +287,6 @@ public interface XMLParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPreviousElement(@NotNull XMLParser.PreviousElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#approachElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterApproachElement(@NotNull XMLParser.ApproachElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#approachElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitApproachElement(@NotNull XMLParser.ApproachElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#approachElements}.
-	 * @param ctx the parse tree
-	 */
-	void enterApproachElements(@NotNull XMLParser.ApproachElementsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#approachElements}.
-	 * @param ctx the parse tree
-	 */
-	void exitApproachElements(@NotNull XMLParser.ApproachElementsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#approachLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterApproachLegsElement(@NotNull XMLParser.ApproachLegsElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#approachLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitApproachLegsElement(@NotNull XMLParser.ApproachLegsElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#missedApproachLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterMissedApproachLegsElement(@NotNull XMLParser.MissedApproachLegsElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#missedApproachLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitMissedApproachLegsElement(@NotNull XMLParser.MissedApproachLegsElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#transitionElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterTransitionElement(@NotNull XMLParser.TransitionElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#transitionElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitTransitionElement(@NotNull XMLParser.TransitionElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#transitionLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterTransitionLegsElement(@NotNull XMLParser.TransitionLegsElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#transitionLegsElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitTransitionLegsElement(@NotNull XMLParser.TransitionLegsElementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link XMLParser#legElement}.
-	 * @param ctx the parse tree
-	 */
-	void enterLegElement(@NotNull XMLParser.LegElementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XMLParser#legElement}.
-	 * @param ctx the parse tree
-	 */
-	void exitLegElement(@NotNull XMLParser.LegElementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link XMLParser#helipadElement}.
 	 * @param ctx the parse tree
