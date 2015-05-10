@@ -1,4 +1,5 @@
-// Generated from C:/Users/Lycantropus/Desktop/COMP/proj/src\XMLParser.g4 by ANTLR 4.5
+// Generated from D:/FEUP/3º Ano/2º Semestre/COMP/Projeto/src\XMLParser.g4 by ANTLR 4.5
+package gen;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -100,6 +101,24 @@ public interface XMLParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMarkingsElement(@NotNull XMLParser.MarkingsElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XMLParser#blastPadElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlastPadElement(@NotNull XMLParser.BlastPadElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XMLParser#runwayStartElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRunwayStartElement(@NotNull XMLParser.RunwayStartElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XMLParser#overrunElemnt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOverrunElemnt(@NotNull XMLParser.OverrunElemntContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link XMLParser#lightsElement}.
 	 * @param ctx the parse tree

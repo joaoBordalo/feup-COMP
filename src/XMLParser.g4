@@ -34,9 +34,12 @@ fuelElement: TAG_START_OPEN FUEL attribute+ TAG_EMPTY_CLOSE;
 towerElement: TAG_START_OPEN TOWER  attribute* TAG_EMPTY_CLOSE;
 
 runwayElement: TAG_START_OPEN RUNWAY  attribute+ TAG_CLOSE runwayElements* TAG_END_OPEN RUNWAY TAG_CLOSE;
-runwayElements: markingsElement | lightsElement | offsetThresholdElement | approachLightsElement | vasiElement | ilsElement;
+runwayElements: markingsElement | lightsElement | offsetThresholdElement | overrunElemnt | runwayStartElement | blastPadElement | approachLightsElement | vasiElement | ilsElement;
 
 markingsElement: TAG_START_OPEN MARKINGS attribute+ TAG_EMPTY_CLOSE;
+blastPadElement: TAG_START_OPEN BLASTPAD attribute+ TAG_EMPTY_CLOSE;
+runwayStartElement: TAG_START_OPEN RUNWAYSTART attribute+ TAG_EMPTY_CLOSE;
+overrunElemnt: TAG_START_OPEN OVERRUN attribute+ TAG_EMPTY_CLOSE;
 lightsElement: TAG_START_OPEN LIGHTS attribute+ TAG_EMPTY_CLOSE;
 offsetThresholdElement: TAG_START_OPEN OFFSETTHRESHOLD attribute+ TAG_EMPTY_CLOSE;
 approachLightsElement: TAG_START_OPEN APPROACHLIGHTS attribute+ TAG_EMPTY_CLOSE;

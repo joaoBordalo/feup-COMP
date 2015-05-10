@@ -3,8 +3,6 @@ package bgl2sdl;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import com.sun.java_cup.internal.runtime.Scanner;
-
 import gen.*;
 
 import java.io.*;
