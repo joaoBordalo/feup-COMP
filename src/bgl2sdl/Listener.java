@@ -3267,7 +3267,7 @@ public class Listener extends XMLParserBaseListener {
 			String attName=tpCtx.attributeName().getText();
 
 			//validar nome de atributo
-			if(taxiwayParkingAttNames.contains(attName))
+			if(taxiwayPathNames.contains(attName))
 			{
 				String attVal = tpCtx.attributeValue().getText();
 				switch (attName) {
@@ -3351,27 +3351,20 @@ public class Listener extends XMLParserBaseListener {
 					break;
 				case "weightLimit":	
 					 def = false;
-					
-					//ultimo char so attvalue
-					Character widthLimitUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!widthLimitUnits.equals('P') && !widthLimitUnits.equals('p'))
+									
+					try
 					{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid weightLimit units in taxiwayPath. using default (P)");
-							def=true;								
+						Float.parseFloat(attVal);
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath weightLimit: " + attVal + ". Expected: floating point value" );
+						return;
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"P");
-						m.put(attName, value);
-						requiredCounter++;
-					}
-					else
-					{
 						m.put(attName, attVal);
 						requiredCounter++;
-					}
+					
 					break;
 					case "surface":
 						if(!taxiwayPathSurfaceValues.contains(attVal))
@@ -3537,6 +3530,7 @@ public class Listener extends XMLParserBaseListener {
 		
 		if(requiredCounter!=11)
 		{
+			System.out.println("counter manhoso:" + requiredCounter);
 			System.out.println("Wrong taxywayPath required arguments. Expected: " + taxiwayPathNames);
 		}
 		else
