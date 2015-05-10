@@ -433,6 +433,7 @@ public class Listener extends XMLParserBaseListener {
 					{
 						String[] attValue = aCtx.attributeValue().getText().split("-");
 						
+						
 						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
 						{
 							System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
@@ -441,8 +442,24 @@ public class Listener extends XMLParserBaseListener {
 						
 					}
 					
-					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
-					requiredCounter++;
+					try
+					{
+					if(Float.parseFloat(aCtx.attributeValue().getText())<-90.0 || Float.parseFloat(aCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
+						return;
+					}
+					
+						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
+						requiredCounter++;
+					
+					
 					break;
 					
 				case "lon":
@@ -457,7 +474,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}
+					
+					try
+					{
+					if(Float.parseFloat(aCtx.attributeValue().getText())<-180 || Float.parseFloat(aCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
+						return;
+					}
 					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -465,7 +496,6 @@ public class Listener extends XMLParserBaseListener {
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
 					//ultimo char so attvalue
 					Character altUnits = new Character (aCtx.attributeValue().getText().charAt(aCtx.attributeValue().getText().length()-1));
@@ -538,6 +568,7 @@ public class Listener extends XMLParserBaseListener {
 					
 					break;
 				default:
+					
 					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 					break;
 				}
@@ -694,6 +725,20 @@ public class Listener extends XMLParserBaseListener {
 						
 					}
 					
+					try
+					{
+					if(Float.parseFloat(tCtx.attributeValue().getText())<-90.0 || Float.parseFloat(tCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
+						return;
+					}
+					
 					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());		
 					requiredCounter++;
 					break;
@@ -710,7 +755,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}	
+					
+					try
+					{
+					if(Float.parseFloat(tCtx.attributeValue().getText())<-180 || Float.parseFloat(tCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
+						return;
+					}
 					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -817,12 +876,27 @@ public class Listener extends XMLParserBaseListener {
 					{
 						String[] attValue = rCtx.attributeValue().getText().split("-");
 						
-						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
+						//TODO ISTO NAO ESTA A VERIFICAR CORRECTAMENTE!
+						if(Float.parseFloat(attValue[0])<-90.0 || Float.parseFloat(attValue[0])>90.0)
 						{
 							System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
 							return;
 						}
 						
+					}
+					
+					try
+					{
+					if(Float.parseFloat(rCtx.attributeValue().getText())<-90.0 || Float.parseFloat(rCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
+						return;
 					}
 					
 					m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
@@ -841,7 +915,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}	
+					
+					try
+					{
+					if(Float.parseFloat(rCtx.attributeValue().getText())<-180 || Float.parseFloat(rCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
+						return;
+					}
 					m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -849,7 +937,6 @@ public class Listener extends XMLParserBaseListener {
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
 					//ultimo char so attvalue
 					Character altUnits = new Character (rCtx.attributeValue().getText().charAt(rCtx.attributeValue().getText().length()-1));
@@ -1743,6 +1830,19 @@ public class Listener extends XMLParserBaseListener {
 						}
 						
 					}
+					try
+					{
+					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(ilsCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
+						return;
+					}
 					
 					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
 					requiredCounter++;
@@ -1760,7 +1860,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}	
+					
+					try
+					{
+					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-180 || Float.parseFloat(ilsCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
+						return;
+					}
 					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -1971,6 +2085,20 @@ public class Listener extends XMLParserBaseListener {
 						
 					}
 					
+					try
+					{
+					if(Float.parseFloat(gsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(gsCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
+						return;
+					}
+					
 					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -1987,7 +2115,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}	
+					
+					try
+					{
+					if(Float.parseFloat(gsCtx.attributeValue().getText())<-180 || Float.parseFloat(gsCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
+						return;
+					}
 					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -2243,6 +2385,20 @@ public class Listener extends XMLParserBaseListener {
 						
 					}
 					
+					try
+					{
+					if(Float.parseFloat(rsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(rsCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
+						return;
+					}
+					
 					m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -2259,7 +2415,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}	
+					
+					try
+					{
+					if(Float.parseFloat(rsCtx.attributeValue().getText())<-180 || Float.parseFloat(rsCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
+						return;
+					}
 					m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
 					requiredCounter++;
 					break;
@@ -2545,6 +2715,21 @@ public class Listener extends XMLParserBaseListener {
 						}
 
 					}
+					
+					try
+					{
+					if(Float.parseFloat(twpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(twpCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
+						return;
+					}
+					m.put(attName, attVal);
 					latlonCounter++;
 					break;
 					
@@ -2561,6 +2746,21 @@ public class Listener extends XMLParserBaseListener {
 						}
 						
 					}
+					
+					try
+					{
+					if(Float.parseFloat(twpCtx.attributeValue().getText())<-180 || Float.parseFloat(twpCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
+						return;
+					}
+					m.put(attName, attVal);
 					latlonCounter++;					
 					break;
 					
@@ -2700,6 +2900,20 @@ public class Listener extends XMLParserBaseListener {
 						
 					}
 					
+					try
+					{
+					if(Float.parseFloat(tpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(tpCtx.attributeValue().getText())>90.0)
+					{
+						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
+						return;
+					}
+					
 					m.put(attName, attVal);
 					latlonCounter++;
 					break;
@@ -2716,7 +2930,21 @@ public class Listener extends XMLParserBaseListener {
 							return;
 						}
 						
-					}				
+					}		
+					
+					try
+					{
+					if(Float.parseFloat(tpCtx.attributeValue().getText())<-180 || Float.parseFloat(tpCtx.attributeValue().getText())>180)
+					{
+						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
+						return;
+					}
+					}
+					catch(NumberFormatException e)
+					{
+						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
+						return;
+					}
 					m.put(attName, attVal);
 					latlonCounter++;
 					break;
