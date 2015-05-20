@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import jdk.internal.org.objectweb.asm.util.CheckAnnotationAdapter;
+
 import org.antlr.v4.runtime.misc.NotNull;
 
 //para confirmar campos:
@@ -19,6 +21,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public class Listener extends XMLParserBaseListener {
 	XMLParser parser;
+	AttributeChecker semanticChecker;
 	Map<String,Map<String,String>> airportAtts = new HashMap<String,Map<String, String>>(); //<nomeElemento,valorElemento>
 	Map<String,String> airportElems = new HashMap<String, String>();
 	
@@ -95,6 +98,8 @@ public class Listener extends XMLParserBaseListener {
 	public Listener(XMLParser parser)
 	{
 		this.parser= parser;
+		this.semanticChecker = new AttributeChecker();
+		
 		airportAttNames= new HashMap<String, Integer>();
 		airportAttNames.put("region", 1);
 		airportAttNames.put("country", 2);
@@ -421,6 +426,7 @@ public class Listener extends XMLParserBaseListener {
 			counter++;
 			
 			String attName=aCtx.attributeName().getText();
+			String attValue= aCtx.attributeValue().getText();
 			
 			//validar nome de atributo e verificar ordem
 			if(airportAttNames.containsKey(attName) && airportAttNames.get(attName)>=counter)
@@ -428,141 +434,72 @@ public class Listener extends XMLParserBaseListener {
 				
 				switch (attName) {
 				case "lat":
-					
-					if(aCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLatitude(attValue, aCtx))
 					{
-						String[] attValue = aCtx.attributeValue().getText().split("-");
-						
-						
-						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
-						{
-							System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
-					
-					try
-					{
-					if(Float.parseFloat(aCtx.attributeValue().getText())<-90.0 || Float.parseFloat(aCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
-						return;
-					}
-					
 						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 						requiredCounter++;
-					
-					
+					}
 					break;
-					
 				case "lon":
 					
-					if(aCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, aCtx))
 					{
-						String[] attValue = aCtx.attributeValue().getText().split("-");
-						
-						if(Float.parseFloat(attValue[0])<-180 || Float.parseFloat(attValue[0])>180)
-						{
-							System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
-					
-					try
-					{
-					if(Float.parseFloat(aCtx.attributeValue().getText())<-180 || Float.parseFloat(aCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": invalid " + attName + " value : " + aCtx.attributeValue().getText());
-						return;
-					}
 					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 					requiredCounter++;
+					}
 					break;
 					
 				case "alt":
-		
+					
 					boolean def = false;
 					
-					//ultimo char so attvalue
-					Character altUnits = new Character (aCtx.attributeValue().getText().charAt(aCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, aCtx, def))
 					{
-							System.out.println("Line "+aCtx.getStart().getLine()+": warning: invalid alt units in airport. using default (M)");
-							def=true;								
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(aCtx.attributeValue().getText().substring(0, aCtx.attributeValue().getText().length()-1)+"M");
-						m.put(aCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
-						requiredCounter++;
-					}
-	
 				break;
 				
 				case "ident":
 					
 					//
-					if(aCtx.attributeValue().getText().length()>4)
+					if(semanticChecker.checkIdent(attValue, aCtx))
 					{
-						String attValue= aCtx.attributeValue().getText();
-						System.out.println("Line "+aCtx.getStart().getLine()+": Airport ident value too long: " + attValue + ". Max 4 Chars!");
-						return;
+						m.put(attName, attValue);
+						requiredCounter++;
 					}
-					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
-					requiredCounter++;
+					
+					
 				break;
 					
 				case "airportTestRadius":
 					
 					//ir buscar ultimo char
-					Character testRadiusUnits = new Character(aCtx.attributeValue().getText().charAt(aCtx.attributeValue().getText().length()-1));
-					if(!testRadiusUnits.equals('M') && !testRadiusUnits.equals('G') && !testRadiusUnits.equals('N'))
+					if(semanticChecker.checkAirportTestRadius(attValue, aCtx))
 					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": Wrong ariportTestRadius format: " + testRadiusUnits +". Use <float(M|G|N)>");
-						return;
-					}
-					else {
-						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
+						m.put(attName, attValue);
 						requiredCounter++;
-					}
-					
-					
+					}					
 					
 					break;
 					
 				case "trafficScalar":
 					
-					if(Float.parseFloat(aCtx.attributeValue().getText())<0.01 ||
-							Float.parseFloat(aCtx.attributeValue().getText())>1.00)
+					
+					if(semanticChecker.checkTrafficScalar(attValue, aCtx))
 					{
-						System.out.println("Line "+aCtx.getStart().getLine()+": Wrong airport trafficScalar value. used: "+ aCtx.attributeValue().getText()
-											+ "expecting 0.1<=X<=1.0");
-						return;
-					}
-					else
-					{
-						m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					
@@ -643,32 +580,27 @@ public class Listener extends XMLParserBaseListener {
 		for(XMLParser.AttributeContext fCtx : ctx.attribute())
 		{
 			String attName=fCtx.attributeName().getText();
+			String attValue=fCtx.attributeValue().getText();
 			
 			if(fuelAttNames.containsKey(attName))
 			{
 				switch (attName) {
 				case "type":
 					String[] typeOptions = {"73","87","100","130","145","MOGAS","JET","JETA","JETA1","JETAP","JETB","JET4","JET5","UNKNOWN"};
-					if(!Arrays.asList(typeOptions).contains(fCtx.attributeValue().getText())){
+					
 						
-						System.out.println("Line "+fCtx.getStart().getLine()+": Wrong fuel type: " + fCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(typeOptions));
-						return;
-						
-					}else{
-						m.put(fCtx.attributeName().getText(), fCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, typeOptions, fCtx))
+					{
+						m.put(attName, attValue);
 					}
 					
 					break;
 					
 				case "availability":
 					String[] availabilityOptions = {"YES","NO","UNKNOWN","PRIOR_REQUEST"};
-					if(!Arrays.asList(availabilityOptions).contains(fCtx.attributeValue().getText())){
-						
-						System.out.println("Line "+fCtx.getStart().getLine()+": Wrong fuel availability: " + fCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(availabilityOptions));
-						return;
-						
-					}else{
-						m.put(fCtx.attributeName().getText(), fCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, availabilityOptions, fCtx))
+					{
+						m.put(attName, attValue);
 					}
 					break;
 
@@ -705,6 +637,7 @@ public class Listener extends XMLParserBaseListener {
 			
 			
 			String attName=tCtx.attributeName().getText();
+			String attValue=tCtx.attributeValue().getText();
 			
 			//validar nome de atributo e verificar ordem
 			if(towerAttNames.containsKey(attName))
@@ -713,90 +646,37 @@ public class Listener extends XMLParserBaseListener {
 				switch (attName) {
 				case "lat":
 					
-					if(tCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = tCtx.attributeValue().getText().split("-");
-						
-						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
-						{
-							System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
-					
-					try
-					{
-					if(Float.parseFloat(tCtx.attributeValue().getText())<-90.0 || Float.parseFloat(tCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());		
+				if (semanticChecker.checkLatitude(attValue, tCtx)) {
+					m.put(attName, attValue);		
 					requiredCounter++;
+				}
+					
 					break;
 					
 				case "lon":
 					
-					if(tCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = tCtx.attributeValue().getText().split("-");
-						
-						if(Float.parseFloat(attValue[0])<-180 || Float.parseFloat(attValue[0])>180)
-						{
-							System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(tCtx.attributeValue().getText())<-180 || Float.parseFloat(tCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
-						return;
+					if (semanticChecker.checkLongitude(attValue, tCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tCtx.getStart().getLine()+": invalid " + attName + " value : " + tCtx.attributeValue().getText());
-						return;
-					}
-					m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());
-					requiredCounter++;
 					break;
 					
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
-					
-					//ultimo char so attvalue
-					Character altUnits = new Character (tCtx.attributeValue().getText().charAt(tCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, tCtx, def))
 					{
-							System.out.println("Line "+tCtx.getStart().getLine()+": warning: invalid alt units in tower. using default (M)");
-							def=true;								
-					}
-					
 					if(def==true)
 					{
 						//valor antigo com as unidades por defeito M
 						String value = new String(tCtx.attributeValue().getText().substring(0, tCtx.attributeValue().getText().length()-1)+"M");
-						m.put(tCtx.attributeName().getText(), value);
+						m.put(attName, value);
 					}
 					else
 					{
-						m.put(tCtx.attributeName().getText(), tCtx.attributeValue().getText());
+						m.put(attName, attValue);
 						requiredCounter++;
+					}
 					}
 	
 				break;
@@ -811,7 +691,7 @@ public class Listener extends XMLParserBaseListener {
 			else
 			{
 				
-				System.out.println("Line "+tCtx.getStart().getLine()+": Wrong attribute name. used: "+ tCtx.attributeName().getText());
+				System.out.println("Line "+tCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName);
 				return;
 			}
 			
@@ -864,6 +744,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 			
 			String attName=rCtx.attributeName().getText();
+			String attValue=rCtx.attributeValue().getText();
 			
 			//validar nome de atributo
 			if(runwayAttNames.containsKey(attName))
@@ -872,121 +753,60 @@ public class Listener extends XMLParserBaseListener {
 				switch (attName) {
 				case "lat":
 					
-					if(rCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = rCtx.attributeValue().getText().split("-");
-						
-						//TODO ISTO NAO ESTA A VERIFICAR CORRECTAMENTE!
-						if(Float.parseFloat(attValue[0])<-90.0 || Float.parseFloat(attValue[0])>90.0)
-						{
-							System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
 					
-					try
-					{
-					if(Float.parseFloat(rCtx.attributeValue().getText())<-90.0 || Float.parseFloat(rCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
-						return;
+					if (semanticChecker.checkLatitude(attValue, rCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
-					requiredCounter++;
 					break;
 					
 				case "lon":
 					
-					if(rCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, rCtx))
 					{
-						String[] attValue = rCtx.attributeValue().getText().split("-");
-						
-						if(Float.parseFloat(attValue[0])<-180 || Float.parseFloat(attValue[0])>180)
-						{
-							System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(rCtx.attributeValue().getText())<-180 || Float.parseFloat(rCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + rCtx.attributeValue().getText());
-						return;
-					}
-					m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
+					m.put(attName, attValue);
 					requiredCounter++;
+					}
 					break;
 					
 				case "alt":
 		
 					boolean def = false;
 					
-					//ultimo char so attvalue
-					Character altUnits = new Character (rCtx.attributeValue().getText().charAt(rCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, rCtx, def))
 					{
-							System.out.println("Line "+rCtx.getStart().getLine()+": warning: invalid alt units in runway. using default (M)");
-							def=true;								
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(rCtx.attributeValue().getText().substring(0, rCtx.attributeValue().getText().length()-1)+"M");
-						m.put(rCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
-						requiredCounter++;
-					}
-	
 				break;
 
 				case "surface"://req
 					String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
-					if(!Arrays.asList(surfaceOptions).contains(rCtx.attributeValue().getText())){
-						
-						System.out.println("Line "+rCtx.getStart().getLine()+": Wrong runway surface: " + rCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(surfaceOptions));
-						return;
-						
-					}else{
-						m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, surfaceOptions, rCtx))
+					{
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 					
 				case "heading"://req
 					
-
-						String attValue = rCtx.attributeValue().getText();
-						
-						if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
-						{
-							System.out.println("Line "+rCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue);
-							return;
-						}else{
-							m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
-							requiredCounter++;
-						}
+					if(semanticChecker.checkHeading(attValue, rCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
 
 					break;
 					
@@ -1375,6 +1195,7 @@ public class Listener extends XMLParserBaseListener {
 		for(XMLParser.AttributeContext otCtx : ctx.attribute())
 		{
 			String attName=otCtx.attributeName().getText();
+			String attValue=otCtx.attributeValue().getText();
 			
 			//validar nome de atributo e verificar ordem
 			if(offsetThresholdAttNames.contains(attName))
@@ -1446,12 +1267,10 @@ public class Listener extends XMLParserBaseListener {
 
 				case "surface":
 					String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
-					if(!Arrays.asList(surfaceOptions).contains(otCtx.attributeValue().getText())){
-
-						System.out.println("Line "+otCtx.getStart().getLine()+": Wrong offsetThreshold surface: " + otCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(surfaceOptions));
-						return;
-					}else{
-						m.put(otCtx.attributeName().getText(), otCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, surfaceOptions, otCtx))
+					{
+						m.put(attName, attValue);
+						
 					}
 					break;
 
@@ -1810,7 +1629,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=ilsCtx.attributeName().getText();
-
+			String attValue=ilsCtx.attributeValue().getText();
 			//validar nome de atributo
 			if(ilsAttNames.contains(attName))
 			{
@@ -1819,107 +1638,55 @@ public class Listener extends XMLParserBaseListener {
 				
 				case "lat":
 					
-					if(ilsCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = ilsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
-					try
-					{
-					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(ilsCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
+					
+					if (semanticChecker.checkLatitude(attValue, ilsCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
 					
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					requiredCounter++;
+					
 					break;
 					
 				case "lon":
 					
-					if(ilsCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, ilsCtx))
 					{
-						String[] attValue = ilsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-180 || Float.parseFloat(ilsCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
+					m.put(attName, attValue);
 					requiredCounter++;
+					}
 					break;
 					
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
-					//ultimo char so attvalue
-					Character altUnits = new Character (ilsCtx.attributeValue().getText().charAt(ilsCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, ilsCtx, def))
 					{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": warning: invalid alt units in ils. using default (M)");
-							def=true;								
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(ilsCtx.attributeValue().getText().substring(0, ilsCtx.attributeValue().getText().length()-1)+"M");
-						m.put(ilsCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
-	
 				break;
 					
 				case "heading"://req
 					
 
-						String attValue = ilsCtx.attributeValue().getText();
 						
-						if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue);
-							return;
-						}else{
-							m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-							requiredCounter++;
-						}
+					if(semanticChecker.checkHeading(attValue, ilsCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
 
 					break;
 					
@@ -2064,7 +1831,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=gsCtx.attributeName().getText();
-
+			String attValue=gsCtx.attributeValue().getText();
 			//validar nome de atributo
 			if(glideSlopeAttNames.contains(attName))
 			{
@@ -2073,93 +1840,42 @@ public class Listener extends XMLParserBaseListener {
 				
 				case "lat":
 					
-					if(gsCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = gsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
 					
-					try
-					{
-					if(Float.parseFloat(gsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(gsCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
-						return;
+					if (semanticChecker.checkLatitude(attValue, gsCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
-					requiredCounter++;
 					break;
 					
 				case "lon":
 					
-					if(gsCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, gsCtx))
 					{
-						String[] attValue = gsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(gsCtx.attributeValue().getText())<-180 || Float.parseFloat(gsCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+gsCtx.getStart().getLine()+": invalid " + attName + " value : " + gsCtx.attributeValue().getText());
-						return;
-					}
-					m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
+					m.put(attName, attValue);
 					requiredCounter++;
+					}
 					break;
 					
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
-					//ultimo char so attvalue
-					Character altUnits = new Character (gsCtx.attributeValue().getText().charAt(gsCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, gsCtx, def))
 					{
-							System.out.println("Line "+gsCtx.getStart().getLine()+": warning: invalid alt units in ils. using default (M)");
-							def=true;								
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(gsCtx.attributeValue().getText().substring(0, gsCtx.attributeValue().getText().length()-1)+"M");
-						m.put(gsCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(gsCtx.attributeName().getText(), gsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
-	
 				break;
 				case "pitch":
 					
@@ -2223,6 +1939,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=bpCtx.attributeName().getText();
+			String attValue=bpCtx.attributeValue().getText();
 
 			//validar nome de atributo e verificar ordem
 			if(blastPadAttNames.contains(attName))
@@ -2301,12 +2018,9 @@ public class Listener extends XMLParserBaseListener {
 				case "surface":
 					
 					String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
-					if(!Arrays.asList(surfaceOptions).contains(bpCtx.attributeValue().getText())){
-
-						System.out.println("Line "+bpCtx.getStart().getLine()+": Wrong blastpad surface: " + bpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(surfaceOptions));
-						return;
-					}else{
-						m.put(bpCtx.attributeName().getText(), bpCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, surfaceOptions, bpCtx))
+					{
+						m.put(attName, attValue);
 					}
 					break;
 					
@@ -2350,6 +2064,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=rsCtx.attributeName().getText();
+			String attValue=rsCtx.attributeValue().getText();
 
 			//validar nome de atributo
 			if(runwayStartAttNames.contains(attName))
@@ -2373,108 +2088,53 @@ public class Listener extends XMLParserBaseListener {
 					
 				case "lat":
 					
-					if(rsCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = rsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
 					
-					try
-					{
-					if(Float.parseFloat(rsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(rsCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
-						return;
+					if (semanticChecker.checkLatitude(attValue, rsCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
-					requiredCounter++;
 					break;
 					
 				case "lon":
 					
-					if(rsCtx.attributeValue().getText().split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, rsCtx))
 					{
-						String[] attValue = rsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(rsCtx.attributeValue().getText())<-180 || Float.parseFloat(rsCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + rsCtx.attributeValue().getText());
-						return;
-					}
-					m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
+					m.put(attName, attValue);
 					requiredCounter++;
+					}
 					break;
 					
 				case "alt":
 		
 					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
-					//ultimo char so attvalue
-					Character altUnits = new Character (rsCtx.attributeValue().getText().charAt(rsCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
+					if(semanticChecker.checkAltitude(attValue, rsCtx, def))
 					{
-							System.out.println("Line "+rsCtx.getStart().getLine()+": warning: invalid alt units in ils. using default (M)");
-							def=true;								
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
 					}
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(rsCtx.attributeValue().getText().substring(0, rsCtx.attributeValue().getText().length()-1)+"M");
-						m.put(rsCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
-	
 				break;
 				
 				case "heading":
 					
-					String attValue = rsCtx.attributeValue().getText();
 					
-					if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
+					if(semanticChecker.checkHeading(attValue, rsCtx))
 					{
-						System.out.println("Line "+rsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue);
-						return;
-					}else{
-						m.put(rsCtx.attributeName().getText(), rsCtx.attributeValue().getText());
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
-					
+
 					break;
 					
 				case "end":
@@ -2526,6 +2186,7 @@ public class Listener extends XMLParserBaseListener {
 		for(XMLParser.AttributeContext oCtx : ctx.attribute())
 		{
 			String attName=oCtx.attributeName().getText();
+			String attValue=oCtx.attributeValue().getText();
 			
 			//validar nome de atributo e verificar ordem
 			if(overrunAttNames.contains(attName))
@@ -2597,12 +2258,10 @@ public class Listener extends XMLParserBaseListener {
 
 				case "surface":
 					String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
-					if(!Arrays.asList(surfaceOptions).contains(oCtx.attributeValue().getText())){
-
-						System.out.println("Line "+oCtx.getStart().getLine()+": Wrong offsetThreshold surface: " + oCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(surfaceOptions));
-						return;
-					}else{
-						m.put(oCtx.attributeName().getText(), oCtx.attributeValue().getText());
+					if(semanticChecker.checkOptions(attValue, surfaceOptions, oCtx))
+					{
+						m.put(attName, attValue);
+						
 					}
 					break;
 
@@ -2657,7 +2316,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName = twpCtx.attributeName().getText();
-			String attVal = twpCtx.attributeValue().getText();
+			String attValue = twpCtx.attributeValue().getText();
 			//validar nome de atributo
 			if(taxiwayPointAttNames.contains(attName))
 			{
@@ -2665,9 +2324,9 @@ public class Listener extends XMLParserBaseListener {
 				switch (attName) {
 				case "index":
 					
-					if(Integer.parseInt(attVal)<0 || Integer.parseInt(attVal)>3999)
+					if(Integer.parseInt(attValue)<0 || Integer.parseInt(attValue)>3999)
 					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal +". Must be int 0 to 3999 and unique.");
+						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue +". Must be int 0 to 3999 and unique.");
 						return;
 					}else{
 						m.put(twpCtx.attributeName().getText(), twpCtx.attributeValue().getText());
@@ -2704,64 +2363,20 @@ public class Listener extends XMLParserBaseListener {
 					
 				case "lat":
 					
-					if(attVal.split("-").length==3)
-					{
-						String[] attValue = attVal.split("-");
-
-						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
-						{
-							System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0] + " in taxiwaypoint");
-							return;
-						}
-
-					}
 					
-					try
-					{
-					if(Float.parseFloat(twpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(twpCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
+					if (semanticChecker.checkLatitude(attValue, twpCtx)) {
+						m.put(attName, attValue);		
+						requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
-					m.put(attName, attVal);
-					latlonCounter++;
 					break;
 					
 				case "lon":
 					
-					if(attVal.split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, twpCtx))
 					{
-						String[] attValue = attVal.split("-");
-						
-						if(Float.parseFloat(attValue[0])<-180 || Float.parseFloat(attValue[0])>180)
-						{
-							System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]+ " in taxiwaypoint");
-							return;
-						}
-						
+					m.put(attName, attValue);
+					requiredCounter++;
 					}
-					
-					try
-					{
-					if(Float.parseFloat(twpCtx.attributeValue().getText())<-180 || Float.parseFloat(twpCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
-					m.put(attName, attVal);
-					latlonCounter++;					
 					break;
 					
 				case "biasX":
@@ -2770,7 +2385,7 @@ public class Listener extends XMLParserBaseListener {
 
 
 					//ultimo char so attvalue
-					Character biasXUnits = new Character (attVal.charAt(attVal.length()-1));
+					Character biasXUnits = new Character (attValue.charAt(attValue.length()-1));
 					if(!biasXUnits.equals('F') && !biasXUnits.equals('M'))
 					{
 						System.out.println("Line "+twpCtx.getStart().getLine()+": warning: invalid biasX units in taxiwaypoint. using default (M)");
@@ -2780,13 +2395,13 @@ public class Listener extends XMLParserBaseListener {
 					if(def==true)
 					{
 						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
+						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						biasCounter++;
 					}
 
@@ -2797,7 +2412,7 @@ public class Listener extends XMLParserBaseListener {
 
 
 					//ultimo char so attvalue
-					Character biasZUnits = new Character (attVal.charAt(attVal.length()-1));
+					Character biasZUnits = new Character (attValue.charAt(attValue.length()-1));
 					if(!biasZUnits.equals('F') && !biasZUnits.equals('M'))
 					{
 						System.out.println("Line "+twpCtx.getStart().getLine()+": warning: invalid biasZ units in taxiwaypoint. using default (M)");
@@ -2807,13 +2422,13 @@ public class Listener extends XMLParserBaseListener {
 					if(def==true)
 					{
 						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
+						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						biasCounter++;
 					}
 					
@@ -2866,15 +2481,16 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=tpCtx.attributeName().getText();
+			String attValue=tpCtx.attributeValue().getText();
 
 			//validar nome de atributo
 			if(taxiwayParkingAttNames.contains(attName))
 			{
-				String attVal = tpCtx.attributeValue().getText();
+				
 				switch (attName) {
 				case "index":
 					
-					 val= Integer.parseInt(attVal);
+					 val= Integer.parseInt(attValue);
 					
 					if(val<0 || val>3999)
 					{
@@ -2882,71 +2498,26 @@ public class Listener extends XMLParserBaseListener {
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 					case "lat":
 					
-					if(attVal.split("-").length==3)
-					{
-						String[] attValue = attVal.split("-");
 						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0] + " in taxiwayParking");
-							return;
+						if (semanticChecker.checkLatitude(attValue, tpCtx)) {
+							m.put(attName, attValue);		
+							requiredCounter++;
 						}
-						
-					}
-					
-					try
-					{
-					if(Float.parseFloat(tpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(tpCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(attName, attVal);
-					latlonCounter++;
 					break;
 					
 				case "lon":
 					
-					if(attVal.split("-").length==3)
+					if(semanticChecker.checkLongitude(attValue, tpCtx))
 					{
-						String[] attValue = attVal.split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]+ " in taxiwayParking");
-							return;
-						}
-						
-					}		
-					
-					try
-					{
-					if(Float.parseFloat(tpCtx.attributeValue().getText())<-180 || Float.parseFloat(tpCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
+					m.put(attName, attValue);
+					requiredCounter++;
 					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					m.put(attName, attVal);
-					latlonCounter++;
 					break;
 					
 				case "biasX":
@@ -2955,7 +2526,7 @@ public class Listener extends XMLParserBaseListener {
 					
 					
 					//ultimo char so attvalue
-					Character biasXUnits = new Character (attVal.charAt(attVal.length()-1));
+					Character biasXUnits = new Character (attValue.charAt(attValue.length()-1));
 					if(!biasXUnits.equals('F') && !biasXUnits.equals('M'))
 					{
 							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid biasX units in taxiwayParking. using default (M)");
@@ -2965,13 +2536,13 @@ public class Listener extends XMLParserBaseListener {
 					if(def==true)
 					{
 						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
+						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						biasCounter++;
 					}
 					
@@ -2982,7 +2553,7 @@ public class Listener extends XMLParserBaseListener {
 					
 					
 					//ultimo char so attvalue
-					Character biasZUnits = new Character (attVal.charAt(attVal.length()-1));
+					Character biasZUnits = new Character (attValue.charAt(attValue.length()-1));
 					if(!biasZUnits.equals('F') && !biasZUnits.equals('M'))
 					{
 							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid biasZ units in taxiwayParking. using default (M)");
@@ -2992,75 +2563,72 @@ public class Listener extends XMLParserBaseListener {
 					if(def==true)
 					{
 						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
+						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						biasCounter++;
 					}
 					
 					break;
 				case "heading"://req
 							
-					if(Float.parseFloat(attVal)<0 || Float.parseFloat(attVal)>360)
+					if(semanticChecker.checkHeading(attValue, tpCtx))
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal + " in taxywayParking");
-						return;
-					}else{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 
 					break;
 				case "radius":
 					
-					if(attVal.endsWith("M"))
+					if(attValue.endsWith("M"))
 						
 					{
-						attVal=attVal.substring(0, attVal.length()-1);
+						attValue=attValue.substring(0, attValue.length()-1);
 					}
 					
-					if(Float.parseFloat(attVal)<0 || Float.parseFloat(attVal)>360)
+					if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal + " in taxywayParking");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue + " in taxywayParking");
 						return;
 					}else{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 				case "type":
 					
-					if(!taxiwayParkingTypeValues.contains(attVal))
+					if(!taxiwayParkingTypeValues.contains(attValue))
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong type value in taxywayParking. must be one of "+ taxiwayParkingTypeValues);
 						return;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 				case "name":
 					
-					if(!taxiwayParkingNameValues.contains(attVal))
+					if(!taxiwayParkingNameValues.contains(attValue))
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong name value in taxywayParking. must be one of "+ taxiwayParkingNameValues);
 						return;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 				case "number":
 					
-					val= Integer.parseInt(attVal);
+					val= Integer.parseInt(attValue);
 					
 					if(val<0 || val>3999)
 					{
@@ -3069,15 +2637,15 @@ public class Listener extends XMLParserBaseListener {
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 				case "airplaneCodes":
 					
 					int validCounter=0;
-					String[] attValue= attVal.split(" ,");
-					for(String s : attValue)
+					String[] value= attValue.split(" ,");
+					for(String s : value)
 					{
 						if (s.length()!=3)
 						{
@@ -3089,69 +2657,69 @@ public class Listener extends XMLParserBaseListener {
 						}
 					}
 					
-					if(validCounter!=attValue.length)
+					if(validCounter!=value.length)
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Warning: not using airplaneCodes in taxyparking");
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						
 					}
 					break;
 				case "pushBack":
 					
-					if(!attVal.equals("NONE") && !attVal.equals("BOTH"))
+					if(!attValue.equals("NONE") && !attValue.equals("BOTH"))
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for pushback in taxiwayParking. Used: " + attVal + "acepts NONE or BOTH");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for pushback in taxiwayParking. Used: " + attValue + "acepts NONE or BOTH");
 						return;
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 						requiredCounter++;
 					}
 					break;
 				case "teeOffset1":
 					
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
+					if(Float.parseFloat(attValue)<0.1 || Float.parseFloat(attValue)>50.0)
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attValue+". Must be between 0.1 and 50.0");
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 					}
 					
 					break;
 				case "teeOffset2":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
+					if(Float.parseFloat(attValue)<0.1 || Float.parseFloat(attValue)>50.0)
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attValue+". Must be between 0.1 and 50.0");
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 					}
 					break;
 				case "teeOffset3":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
+					if(Float.parseFloat(attValue)<0.1 || Float.parseFloat(attValue)>50.0)
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attValue+". Must be between 0.1 and 50.0");
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 					}
 					break;
 				case "teeOffset4":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
+					if(Float.parseFloat(attValue)<0.1 || Float.parseFloat(attValue)>50.0)
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
+						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attValue+". Must be between 0.1 and 50.0");
 					}
 					else
 					{
-						m.put(attName, attVal);
+						m.put(attName, attValue);
 					}
 					break;
 				default:
@@ -3265,6 +2833,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=tpCtx.attributeName().getText();
+			String attValue=tpCtx.attributeValue().getText();
 
 			//validar nome de atributo
 			if(taxiwayPathNames.contains(attName))
@@ -3366,14 +2935,9 @@ public class Listener extends XMLParserBaseListener {
 						requiredCounter++;
 					
 					break;
-					case "surface":
-						if(!taxiwayPathSurfaceValues.contains(attVal))
-						{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath surface: " + attVal + ". Expected: " + taxiwayPathSurfaceValues);
-						return;
-						}
-						else
-						{
+				case "surface":
+					if(semanticChecker.checkOptions(attValue, taxiwayPathSurfaceValues, tpCtx))
+					{
 						m.put(attName, attVal);
 						requiredCounter++;
 					}
@@ -3523,7 +3087,7 @@ public class Listener extends XMLParserBaseListener {
 					
 					break;
 					default:
-						break;
+					break;
 				}
 			}
 		}
