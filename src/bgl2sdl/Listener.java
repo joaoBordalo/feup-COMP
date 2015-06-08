@@ -45,6 +45,8 @@ public class Listener extends XMLParserBaseListener {
 	Map<String, Map<String, String>> taxiwayParkingAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> taxiNameAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> taxiwayPathAtts = new HashMap<String, Map<String, String>>();
+	Map<String, Map<String, String>> helipadAtts = new HashMap<String, Map<String, String>>();
+	Map<String, Map<String, String>> jetwayAtts = new HashMap<String, Map<String, String>>();
 
 	
 	Vector<String> airportAttNames; // para verificar se os nomes dos atributos sao corretos
@@ -69,6 +71,10 @@ public class Listener extends XMLParserBaseListener {
 	Vector<String> taxiwayPathNames;
 	Vector<String> taxiwayPathTypeValues;
 	Vector<String> taxiwayPathSurfaceValues;
+	Vector<String> helipadSurfaceValues;
+	Vector<String> jetwayNames;
+	Vector<String> runwayAliasNames;
+	
 	
 	Vector<String> airportRequired; // para verificar se os nomes dos atributos sao corretos
 	Vector<String> fuelRequired;
@@ -89,6 +95,10 @@ public class Listener extends XMLParserBaseListener {
 	Vector<String> taxiwayParkingRequired;
 	Vector<String> taxiNameRequired;
 	Vector<String> taxiwayPathRequired;
+	Vector<String> helipadNames;
+	Vector<String> helipadRequired;
+	Vector<String> jetwayRequired;
+	Vector<String> runwayAliasRequired;
 	
 	
 	
@@ -112,6 +122,9 @@ public class Listener extends XMLParserBaseListener {
 	int actualTaxiwayParkingIndex=0;
 	int actualTaxiNameIndex=0;
 	int actualTaxiwayPathindex=0;
+	int actualHelipadindex=0;
+	int actualJetwayindex=0;
+	int actualRunwayAliasindex=0;
 	
 	public Listener(XMLParser parser)
 	{
@@ -316,6 +329,16 @@ public class Listener extends XMLParserBaseListener {
 		ilsAttNames.add("name");
 		ilsAttNames.add("backCourse");
 		
+		ilsRequired = new Vector<String>();
+		ilsRequired.add("lat");
+		ilsRequired.add("lon");
+		ilsRequired.add("alt");
+		ilsRequired.add("heading");
+		ilsRequired.add("frequency");
+		ilsRequired.add("end");
+		ilsRequired.add("magvar");
+		ilsRequired.add("ident");
+		
 		
 		glideSlopeAttNames = new Vector<String>();
 		glideSlopeAttNames.add("lat");
@@ -324,6 +347,13 @@ public class Listener extends XMLParserBaseListener {
 		glideSlopeAttNames.add("pitch");
 		glideSlopeAttNames.add("range");
 		
+		glideSlopeRequired = new Vector<String>();
+		glideSlopeRequired.add("lat");
+		glideSlopeRequired.add("lon");
+		glideSlopeRequired.add("alt");
+		glideSlopeRequired.add("pitch");
+		glideSlopeRequired.add("range");
+		
 		runwayStartAttNames= new Vector<String>();
 		runwayStartAttNames.add("type");
 		runwayStartAttNames.add("lat");
@@ -331,6 +361,13 @@ public class Listener extends XMLParserBaseListener {
 		runwayStartAttNames.add("alt");
 		runwayStartAttNames.add("heading");
 		runwayStartAttNames.add("end");
+		
+		runwayStartRequired= new Vector<String>();
+		runwayStartRequired.add("lat");
+		runwayStartRequired.add("lon");
+		runwayStartRequired.add("alt");
+		runwayStartRequired.add("heading");
+
 		
 		blastPadRequired = new Vector<String>();
 		blastPadRequired.add("end");
@@ -348,6 +385,10 @@ public class Listener extends XMLParserBaseListener {
 		overrunAttNames.add("width");
 		overrunAttNames.add("surface");
 		
+		overrunRequired= new Vector<String>();
+		overrunRequired.add("end");
+		overrunRequired.add("length");
+		
 		taxiwayPointAttNames= new Vector<String>();
 		taxiwayPointAttNames.add("index");
 		taxiwayPointAttNames.add("type");
@@ -357,6 +398,13 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPointAttNames.add("biasX");
 		taxiwayPointAttNames.add("biasZ");
 		
+		taxiwayPointRequired= new Vector<String>();
+		taxiwayPointRequired.add("index");
+		taxiwayPointRequired.add("type");
+		taxiwayPointRequired.add("lat");
+		taxiwayPointRequired.add("lon");
+		taxiwayPointRequired.add("biasX");
+		taxiwayPointRequired.add("biasZ");
 		
 		taxiwayParkingAttNames= new Vector<String>();
 		taxiwayParkingAttNames.add("index");
@@ -375,6 +423,23 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayParkingAttNames.add("teeOffset2");
 		taxiwayParkingAttNames.add("teeOffset3");
 		taxiwayParkingAttNames.add("teeOffset4");
+		
+		taxiwayParkingRequired= new Vector<String>();
+		taxiwayParkingRequired.add("index");
+		taxiwayParkingRequired.add("lat");
+		taxiwayParkingRequired.add("lon");
+		taxiwayParkingRequired.add("biasX");
+		taxiwayParkingRequired.add("biasZ");
+		taxiwayParkingRequired.add("heading");
+		taxiwayParkingRequired.add("radius");
+		taxiwayParkingRequired.add("type");
+		taxiwayParkingRequired.add("name");
+		taxiwayParkingRequired.add("number");
+		taxiwayParkingRequired.add("pushBack");
+		taxiwayParkingRequired.add("teeOffset1");
+		taxiwayParkingRequired.add("teeOffset2");
+		taxiwayParkingRequired.add("teeOffset3");
+		taxiwayParkingRequired.add("teeOffset4");
 		
 		taxiwayParkingTypeValues= new Vector<String>();
 		taxiwayParkingTypeValues.add("NONE");
@@ -433,6 +498,19 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPathNames.add("designator");
 		taxiwayPathNames.add("name");
 		
+		taxiwayPathNames = new Vector<String>();
+		taxiwayPathNames.add("type");
+		taxiwayPathNames.add("start");
+		taxiwayPathNames.add("end");
+		taxiwayPathNames.add("width");
+		taxiwayPathNames.add("weightLimit");
+		taxiwayPathNames.add("surface");
+		taxiwayPathNames.add("drawSurface");
+		taxiwayPathNames.add("drawDetail");
+		taxiwayPathNames.add("number");
+		taxiwayPathNames.add("designator");
+		taxiwayPathNames.add("name");
+		
 		taxiwayPathTypeValues = new Vector<String>();
 		taxiwayPathTypeValues.add("RUNWAY");
 		taxiwayPathTypeValues.add("PARKING");
@@ -462,8 +540,50 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPathSurfaceValues.add("STEEL_MATS");
 		taxiwayPathSurfaceValues.add("TARMAC");
 		taxiwayPathSurfaceValues.add("UNKNOWN");
+		
+		
 		taxiwayPathSurfaceValues.add("WATER");
 
+		helipadNames = new Vector<String>();
+		helipadNames.add("lat");
+		helipadNames.add("lon");
+		helipadNames.add("alt");
+		helipadNames.add("surface");
+		helipadNames.add("heading");
+		helipadNames.add("lenght");
+		helipadNames.add("width");
+		helipadNames.add("type");
+		helipadNames.add("closed");
+		helipadNames.add("transparent");
+		helipadNames.add("red");
+		helipadNames.add("green");
+		helipadNames.add("blue");
+		
+		helipadRequired = new Vector<String>();
+		helipadRequired.add("lat");
+		helipadRequired.add("lon");
+		helipadRequired.add("alt");
+		helipadRequired.add("surface");
+		helipadRequired.add("heading");
+		helipadRequired.add("lenght");
+		helipadRequired.add("width");
+		helipadRequired.add("type");
+		
+		jetwayNames = new Vector<String>();
+		jetwayNames.add("gateName");
+		jetwayNames.add("parkingNumber");
+		
+		jetwayRequired = new Vector<String>();
+		jetwayRequired.add("gateName");
+		jetwayRequired.add("parkingNumber");
+		
+		runwayAliasNames = new Vector<String>();
+		runwayAliasNames.add("number");
+		runwayAliasNames.add("designator");
+		
+		runwayAliasRequired = new Vector<String>();
+		runwayAliasRequired.add("number");
+		runwayAliasRequired.add("designator");
 		
 	}
 	
@@ -1413,6 +1533,7 @@ public class Listener extends XMLParserBaseListener {
 		{
 
 			String attName=ilsCtx.attributeName().getText();
+			String attVal=ilsCtx.attributeValue().getText();
 
 			//validar nome de atributo
 			if(ilsAttNames.contains(attName))
@@ -1422,199 +1543,80 @@ public class Listener extends XMLParserBaseListener {
 				
 				case "lat":
 					
-					if(ilsCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = ilsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}
-					try
-					{
-					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-90.0 || Float.parseFloat(ilsCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					requiredCounter++;
+					if(AttributesChecker.lat(ilsCtx))
+						m.put(attName, attVal);
 					break;
 					
 				case "lon":
 					
-					if(ilsCtx.attributeValue().getText().split("-").length==3)
-					{
-						String[] attValue = ilsCtx.attributeValue().getText().split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-							return;
-						}
-						
-					}	
-					
-					try
-					{
-					if(Float.parseFloat(ilsCtx.attributeValue().getText())<-180 || Float.parseFloat(ilsCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + ilsCtx.attributeValue().getText());
-						return;
-					}
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					requiredCounter++;
+					if(AttributesChecker.lon(ilsCtx))
+						m.put(attName, attVal);
 					break;
 					
 				case "alt":
 		
-					boolean def = false;
-					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
-					
-					//ultimo char so attvalue
-					Character altUnits = new Character (ilsCtx.attributeValue().getText().charAt(ilsCtx.attributeValue().getText().length()-1));
-					if(!altUnits.equals('F') && !altUnits.equals('M'))
-					{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": warning: invalid alt units in ils. using default (M)");
-							def=true;								
-					}
-					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(ilsCtx.attributeValue().getText().substring(0, ilsCtx.attributeValue().getText().length()-1)+"M");
-						m.put(ilsCtx.attributeName().getText(), value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					String altString = AttributesChecker.alt(ilsCtx);
+					m.put(attName, altString);
 	
 				break;
 					
 				case "heading"://req
 					
-
-						String attValue = ilsCtx.attributeValue().getText();
-						
-						if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
-						{
-							System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue);
-							return;
-						}else{
-							m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-							requiredCounter++;
-						}
+					if(AttributesChecker.heading(ilsCtx))
+						m.put(attName, attVal);
 
 					break;
 					
 				case "frequency":
 					
-					String freqValue = ilsCtx.attributeValue().getText();
-					
-					if(Float.parseFloat(freqValue)<108.0 || Float.parseFloat(freqValue)>136.992)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + freqValue);
-						return;
-					}else{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-						requiredCounter++;
-					}					
+					if(AttributesChecker.freuquency(ilsCtx))
+						m.put(attName, attVal);
+										
 					break;
 					
 				case "end":
-					String[] endOptions = {"PRIMARY","SECONDARY"};
-					if(!Arrays.asList(endOptions).contains(ilsCtx.attributeValue().getText())){
-
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": Wrong ils end: " + ilsCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(endOptions));
-						return;
-					}else{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					
+					if(AttributesChecker.end(ilsCtx))
+						m.put(attName, attVal);
+					
 					break;
 					
 				case "range":
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
+					String rangeString = AttributesChecker.rangeGS(ilsCtx);
+					m.put(attName, rangeString);
 					
 					break;//TODO cofirmar ^ (assumo que recebe sempre um numero, ou numero+N)
 					
 				case "magvar":
 					
-					String magvarValue = ilsCtx.attributeValue().getText();
-					
-					if(Float.parseFloat(magvarValue)<-360.0 || Float.parseFloat(magvarValue)>360)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + magvarValue + ". Must be -360 to 360. Put default: 0.0");
-						m.put(ilsCtx.attributeName().getText(), "0.0");
-						requiredCounter++;
-					}else{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					if(AttributesChecker.magvar(ilsCtx))
+					m.put(attName, attVal);
 					
 					break;
 					
 				case "ident":
-					if(ilsCtx.attributeValue().getText().length()>4)
-					{
-						String identValue= ilsCtx.attributeValue().getText();
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": ILS ident value too long: " + identValue + ". Max 4 Chars!");
-						return;
-					}
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					requiredCounter++;
+					if(AttributesChecker.ident(ilsCtx))
+						m.put(attName, attVal);
 					break;
 					
 				case "width":
-					String widthValue = ilsCtx.attributeValue().getText();
 					
-					if(Float.parseFloat(widthValue)<0 || Float.parseFloat(widthValue)>360)
-					{
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + widthValue + ". Must be 0 to 360.");
-						return;
-					}else{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					}					
+					if(AttributesChecker.heading(ilsCtx))
+						m.put(attName, attVal);
+					
 					break;
 					
 				case "name":
-					if(ilsCtx.attributeValue().getText().length()>48)
-					{
-						String nameValue= ilsCtx.attributeValue().getText();
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": ILS ident value too long: " + nameValue + ". Max 48 Chars!");
-						return;
-					}
-					m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
+					if(AttributesChecker.stringchecker(ilsCtx))
+						m.put(attName, attVal);
+					
 					break;
 					
 				case "backCourse":
-					String[] backCourseOptions = {"TRUE","FALSE"};
-					if(!Arrays.asList(backCourseOptions).contains(ilsCtx.attributeValue().getText())){
-
-						System.out.println("Line "+ilsCtx.getStart().getLine()+": Wrong ils backCourse: " + ilsCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(backCourseOptions));
-						return;
-					}else{
-						m.put(ilsCtx.attributeName().getText(), ilsCtx.attributeValue().getText());
-					}
+					
+					String bcString = AttributesChecker.trueorfalse(ilsCtx);
+					m.put(attName, bcString);
+					
 					break;
 					
 				default:
@@ -1633,31 +1635,20 @@ public class Listener extends XMLParserBaseListener {
 
 		}
 		//TODO confirmar: se nao tiver range, adiciono o default 27N
-		if(!m.containsKey("range")){
-			System.out.println("ILS range not defined. Put default 27N");
-			m.put("range", "27N");
-			requiredCounter++;
-		}
-		if(requiredCounter!=8)
-		{
-			System.out.println("Wrong number of required attributes in ils. must be 8: lat, lon, alt, heading, frequency, end, magvar, ident");
-			return;
-		}
+		for (String s: ilsRequired)
+        {
+          if(!m.containsKey(s))
+          {
+        	  System.out.println("The required attribute "+s+" in element ils not found");
+        	  return;
+          }
+        }
 
 		ilsAtts.put("ILS"+actualIlsIndex, m);
 		airportElems.put("ILS"+actualIlsIndex, "AIRPORT"+actualAirportIndex);
 
 	}
 
-	
-	
-	@Override public void enterIlsElements(@NotNull XMLParser.IlsElementsContext ctx) { }
-	
-	
-	
-
-	
-	@Override public void exitIlsElements(@NotNull XMLParser.IlsElementsContext ctx) { }
 	
 	@Override public void enterGlideSlopeElement(@NotNull XMLParser.GlideSlopeElementContext ctx) 
 	{ 
@@ -2089,10 +2080,10 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 
 	@Override public void exitTaxiwayPointElement(@NotNull XMLParser.TaxiwayPointElementContext ctx) { 
 		
-		int requiredCounter = 0;
+	
 		int latlonCounter = 0;
 		int biasCounter = 0;
-		boolean def=false;
+	
 
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		for(XMLParser.AttributeContext twpCtx : ctx.attribute())
@@ -2107,158 +2098,56 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 				switch (attName) {
 				case "index":
 					
-					if(Integer.parseInt(attVal)<0 || Integer.parseInt(attVal)>3999)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal +". Must be int 0 to 3999 and unique.");
-						return;
-					}else{
-						m.put(twpCtx.attributeName().getText(), twpCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					if(AttributesChecker.index(twpCtx))
+					m.put(attName, attVal);
+					
 					break;
 					
 				case "type":
 					
-					String[] typeOptions = {"NORMAL","HOLD_SHORT","ILS_HOLD_SHORT","HOLD_SHORT_NO_DRAW","ILS_HOLD_SHORT_NO_DRAW"};
-					if(!Arrays.asList(typeOptions).contains(twpCtx.attributeValue().getText())){
-
-						System.out.println("Line "+twpCtx.getStart().getLine()+": Wrong waypoint type: " + twpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(typeOptions));
-						return;
-					}else{
-						m.put(twpCtx.attributeName().getText(), twpCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					if(AttributesChecker.typeTWP(twpCtx))
+					m.put(attName, attVal);
 					
 					break;
 					
 				case "orientation":
 					
-					String[] orientationOptions = {"FORWARD", "REVERSE"};
-					if(!Arrays.asList(orientationOptions).contains(twpCtx.attributeValue().getText())){
-
-						System.out.println("Line "+twpCtx.getStart().getLine()+": Wrong waypoint orientation: " + twpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(orientationOptions));
-						return;
-					}else{
-						m.put(twpCtx.attributeName().getText(), twpCtx.attributeValue().getText());
-					}
+					if(AttributesChecker.orientation(twpCtx))
+					m.put(attName, attVal);
 					
 					break;
 					
 				case "lat":
-					
-					if(attVal.split("-").length==3)
+				
+					if(AttributesChecker.lat(twpCtx))
 					{
-						String[] attValue = attVal.split("-");
-
-						if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
-						{
-							System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0] + " in taxiwaypoint");
-							return;
-						}
-
-					}
-					
-					try
-					{
-					if(Float.parseFloat(twpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(twpCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
 					m.put(attName, attVal);
 					latlonCounter++;
+					}
+					
 					break;
 					
 				case "lon":
 					
-					if(attVal.split("-").length==3)
+					if(AttributesChecker.lon(twpCtx))
 					{
-						String[] attValue = attVal.split("-");
-						
-						if(Float.parseFloat(attValue[0])<-180 || Float.parseFloat(attValue[0])>180)
-						{
-							System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]+ " in taxiwaypoint");
-							return;
-						}
-						
-					}
-					
-					try
-					{
-					if(Float.parseFloat(twpCtx.attributeValue().getText())<-180 || Float.parseFloat(twpCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": invalid " + attName + " value : " + twpCtx.attributeValue().getText());
-						return;
-					}
 					m.put(attName, attVal);
-					latlonCounter++;					
+					latlonCounter++;
+					}
 					break;
 					
 				case "biasX":
 
-					def=false;
-
-
-					//ultimo char so attvalue
-					Character biasXUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!biasXUnits.equals('F') && !biasXUnits.equals('M'))
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": warning: invalid biasX units in taxiwaypoint. using default (M)");
-						def=true;								
-					}
-
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
-						m.put(attName, value);
-						biasCounter++;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						biasCounter++;
-					}
-
+					String biasxString = AttributesChecker.alt(twpCtx);
+					m.put(attName, biasxString);
+					biasCounter++;
+					
 					break;
 				case "biasZ":
 					
-					def=false;
-
-
-					//ultimo char so attvalue
-					Character biasZUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!biasZUnits.equals('F') && !biasZUnits.equals('M'))
-					{
-						System.out.println("Line "+twpCtx.getStart().getLine()+": warning: invalid biasZ units in taxiwaypoint. using default (M)");
-						def=true;								
-					}
-
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
-						m.put(attName, value);
-						biasCounter++;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						biasCounter++;
-					}
-					
+					String biaszString = AttributesChecker.alt(twpCtx);
+					m.put(attName, biaszString);
+					biasCounter++;
 					break;
 					
 				default:
@@ -2279,15 +2168,21 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 			System.out.println("Choose one pair of attributes lat/lon or biasX/biasZ");
 			return;
 		}
-		if(requiredCounter != 2){
-			System.out.println("Wrong number of required arguments. Use at least " + taxiwayPointAttNames.get(0)+ " and " + taxiwayPointAttNames.get(1));
-			return;
-		}
-		else
-		{
+		
+		
+		for (String s: taxiwayPointRequired)
+        {
+          if(!m.containsKey(s))
+          {
+        	  System.out.println("The required attribute "+s+" in element taxiwaypoint not found");
+        	  return;
+          }
+        }
+	
+	
 			taxiwayPointAtts.put("TAIWAYPOINT"+actualTaxiwayPointIndex, m);
 			airportElems.put("TAIWAYPOINT"+actualTaxiwayPointIndex, "AIRPORT"+actualAirportIndex);
-		}
+		
 
 	}
 	
@@ -2298,10 +2193,10 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 	
 	@Override public void exitTaxiwayParkingElement(@NotNull XMLParser.TaxiwayParkingElementContext ctx) 
 	{ 
-		int requiredCounter = 0;
+		
 		int latlonCounter = 0;
 		int biasCounter = 0;
-		boolean def=false;
+	
 		Integer val;
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		for(XMLParser.AttributeContext tpCtx : ctx.attribute())
@@ -2316,285 +2211,116 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 				switch (attName) {
 				case "index":
 					
-					 val= Integer.parseInt(attVal);
-					
-					if(val<0 || val>3999)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong attribute value for index in taxiwayParking. Used " +val+ " must be between 0 and 3999.");
-					}
-					else
-					{
+					if(AttributesChecker.index(tpCtx))
 						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					 
 					break;
 					case "lat":
 					
-					if(attVal.split("-").length==3)
+					if(AttributesChecker.lat(tpCtx))
 					{
-						String[] attValue = attVal.split("-");
-						
-						if(Integer.parseInt(attValue[0])<-90 || Integer.parseInt(attValue[0])>90)
-						{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0] + " in taxiwayParking");
-							return;
-						}
-						
+						m.put(attName, attVal);
+						latlonCounter++;
 					}
 					
-					try
-					{
-					if(Float.parseFloat(tpCtx.attributeValue().getText())<-90.0 || Float.parseFloat(tpCtx.attributeValue().getText())>90.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
 					
-					m.put(attName, attVal);
-					latlonCounter++;
 					break;
 					
 				case "lon":
 					
-					if(attVal.split("-").length==3)
+					if(AttributesChecker.lon(tpCtx))
 					{
-						String[] attValue = attVal.split("-");
-						
-						if(Integer.parseInt(attValue[0])<-180 || Integer.parseInt(attValue[0])>180)
-						{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]+ " in taxiwayParking");
-							return;
-						}
-						
-					}		
+						m.put(attName, attVal);
+						latlonCounter++;
+					}
 					
-					try
-					{
-					if(Float.parseFloat(tpCtx.attributeValue().getText())<-180 || Float.parseFloat(tpCtx.attributeValue().getText())>180)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + tpCtx.attributeValue().getText());
-						return;
-					}
-					m.put(attName, attVal);
-					latlonCounter++;
 					break;
 					
 				case "biasX":
 					
-					def=false;
-					
-					
-					//ultimo char so attvalue
-					Character biasXUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!biasXUnits.equals('F') && !biasXUnits.equals('M'))
-					{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid biasX units in taxiwayParking. using default (M)");
-							def=true;								
-					}
-					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
-						m.put(attName, value);
+						String biasxString= AttributesChecker.alt(tpCtx);
+						m.put(attName, biasxString);
 						biasCounter++;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						biasCounter++;
-					}
+					
 					
 					break;
 				case "biasZ":
 					
-					def=false;
-					
-					
-					//ultimo char so attvalue
-					Character biasZUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!biasZUnits.equals('F') && !biasZUnits.equals('M'))
-					{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid biasZ units in taxiwayParking. using default (M)");
-							def=true;								
-					}
-					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
-						m.put(attName, value);
-						biasCounter++;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						biasCounter++;
-					}
+					String biaszString= AttributesChecker.alt(tpCtx);
+					m.put(attName, biaszString);
+					biasCounter++;
 					
 					break;
 				case "heading"://req
 							
-					if(Float.parseFloat(attVal)<0 || Float.parseFloat(attVal)>360)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal + " in taxywayParking");
-						return;
-					}else{
+					if(AttributesChecker.heading(tpCtx))
 						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					
 
 					break;
 				case "radius":
 					
-					if(attVal.endsWith("M"))
-						
+					if(AttributesChecker.radius(tpCtx))
 					{
-						attVal=attVal.substring(0, attVal.length()-1);
+						m.put(attName, attVal);
+						
 					}
 					
-					if(Float.parseFloat(attVal)<0 || Float.parseFloat(attVal)>360)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attVal + " in taxywayParking");
-						return;
-					}else{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					
 					break;
 				case "type":
 					
-					if(!taxiwayParkingTypeValues.contains(attVal))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong type value in taxywayParking. must be one of "+ taxiwayParkingTypeValues);
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					if(AttributesChecker.typeTWPA(tpCtx, taxiwayParkingTypeValues))
+					m.put(attName, attVal);
+					
 					break;
 				case "name":
 					
-					if(!taxiwayParkingNameValues.contains(attVal))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong name value in taxywayParking. must be one of "+ taxiwayParkingNameValues);
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					if(AttributesChecker.typeTWPA(tpCtx, taxiwayParkingNameValues))
+					m.put(attName, attVal);
+					
 					break;
 				case "number":
 					
-					val= Integer.parseInt(attVal);
+					if(AttributesChecker.index(tpCtx))
+					m.put(attName, attVal);
+						
 					
-					if(val<0 || val>3999)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong attribute value for number in taxiwayParking. Used " +val+ " must be between 0 and 3999.");
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
 					break;
 				case "airplaneCodes":
 					
-					int validCounter=0;
-					String[] attValue= attVal.split(" ,");
-					for(String s : attValue)
-					{
-						if (s.length()!=3)
-						{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong code size for airplaneCodes. each element cointains 3 capital chars.");
-						}
-						else
-						{
-							validCounter++;
-						}
-					}
-					
-					if(validCounter!=attValue.length)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Warning: not using airplaneCodes in taxyparking");
-					}
-					else
-					{
+					if(AttributesChecker.airlineCodes(tpCtx))
 						m.put(attName, attVal);
-						
-					}
 					break;
 				case "pushBack":
 					
-					if(!attVal.equals("NONE") && !attVal.equals("BOTH"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for pushback in taxiwayParking. Used: " + attVal + "acepts NONE or BOTH");
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					if(AttributesChecker.pushback(tpCtx))
+					m.put(attName, attVal);
+					
 					break;
 				case "teeOffset1":
 					
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
-					}
-					else
-					{
+					if(AttributesChecker.offset(tpCtx))
 						m.put(attName, attVal);
-					}
 					
 					break;
 				case "teeOffset2":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
-					}
-					else
-					{
+					
+					if(AttributesChecker.offset(tpCtx))
 						m.put(attName, attVal);
-					}
+					
 					break;
 				case "teeOffset3":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
-					}
-					else
-					{
+					
+					if(AttributesChecker.offset(tpCtx))
 						m.put(attName, attVal);
-					}
+					
 					break;
 				case "teeOffset4":
-					if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
-					}
-					else
-					{
+					
+					if(AttributesChecker.offset(tpCtx))
 						m.put(attName, attVal);
-					}
+					
 					break;
 				default:
 					break;
@@ -2610,15 +2336,20 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 			return;
 		}
 		
-		if(requiredCounter!=7)
-		{
-			System.out.println("Wrong Number of required Arguments in taxiwayParking.");
-		}
-		else
-		{
+		
+		for (String s: taxiwayParkingRequired)
+        {
+          if(!m.containsKey(s))
+          {
+        	  System.out.println("The required attribute "+s+" in element taxiwayparking not found");
+        	  return;
+          }
+        }
+	
+		
 			taxiwayParkingAtts.put("TAXIWAYPARKING"+actualTaxiwayParkingIndex, m);
 			airportElems.put("TAXIWAYPARKING"+actualTaxiwayParkingIndex, "AIRPORT"+actualAirportIndex);
-		}
+		
 	}
 	
 	@Override public void enterTaxiNameElement(@NotNull XMLParser.TaxiNameElementContext ctx) { 
@@ -2634,7 +2365,7 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 	@Override public void exitTaxiNameElement(@NotNull XMLParser.TaxiNameElementContext ctx) { 
 		
 		Map<String, String> m = new LinkedHashMap<String, String>();
-		int requiredCounter = 0;
+		
 		for(XMLParser.AttributeContext tnCtx : ctx.attribute())
 		{
 			String attName=tnCtx.attributeName().getText();
@@ -2647,27 +2378,13 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 
 				case "index":
 					
-					 int val= Integer.parseInt(attVal);
-					
-					if(val<0 || val>255)
-					{
-						System.out.println("Line "+tnCtx.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
-					}
-					else
-					{
+					if(AttributesChecker.indexTN(tnCtx))
 						m.put(attName, attVal);
-						requiredCounter++;
-					}
 					break;
 
 				case "name":
-					if(attVal.length()>8)
-					{
-						System.out.println("Line "+tnCtx.getStart().getLine()+": taxiName name value too long: " + attVal + ". Max 8 Chars!");
-						return;
-					}
-					m.put(attName, attVal);
-					requiredCounter++;
+					if(AttributesChecker.nameTN(tnCtx))
+						m.put(attName, attVal);
 					break;
 
 				default:
@@ -2679,15 +2396,18 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 				return;
 			}
 		}
-		if(requiredCounter != 2){
-			System.out.println("Wrong number of required arguments. Use " + taxiNameAttNames.get(0)+ " and " + taxiNameAttNames.get(1));
-			return;
-		}
-		else
-		{
+		for (String s: taxiNameRequired)
+        {
+          if(!m.containsKey(s))
+          {
+        	  System.out.println("The required attribute "+s+" in element taxiname not found");
+        	  return;
+          }
+        }
+		
 			taxiNameAtts.put("TAXINAME"+actualTaxiNameIndex, m);
 			airportElems.put("TAXINAME"+actualTaxiNameIndex, "AIRPORT"+actualAirportIndex);
-		}
+		
 
 		
 	}
@@ -2699,8 +2419,7 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 
 	@Override public void exitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx) 
 	{ 
-		int requiredCounter = 0;
-		boolean def=false;
+		
 		
 		Map<String, String> m = new LinkedHashMap<String, String>();
 		for(XMLParser.AttributeContext tpCtx : ctx.attribute())
@@ -2715,253 +2434,96 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 				switch (attName) {
 				case "type":
 					
-					if(!taxiwayPathTypeValues.contains(attVal)){
-						
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath type: " + attVal + ". Expected: " + taxiwayPathTypeValues);
-						return;
-						
-					}else{
+					if(AttributesChecker.typeTP(tpCtx, taxiwayPathTypeValues))
 						m.put(attName, attVal);
-						requiredCounter++;
-					}
 					break;
 				case "start":
 					
-					try
-					{
-						Integer.parseInt(attVal);
-					} 
-					catch(NumberFormatException e) 
-					{ 
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong start value at taxyway path element");
-				        return; 
-				    } 
-					catch(NullPointerException e) 
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong start value at taxyway path element");
-				        return;
-					}
-					
-					m.put(attName, attVal);
-					requiredCounter++;
+					if(AttributesChecker.startend(tpCtx))
+						m.put(attName, attVal);
 
 					break;
 				case "end":	
 					
-					try
-					{
-						Integer.parseInt(attVal);
-					} 
-					catch(NumberFormatException e) 
-					{ 
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong end value at taxyway path element");
-				        return; 
-				    } 
-					catch(NullPointerException e) 
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong end value at taxyway path element");
-				        return;
-					}
-					
-					m.put(attName, attVal);
-					requiredCounter++;
+					if(AttributesChecker.startend(tpCtx))
+						m.put(attName, attVal);
 					break;
 				
 				case "width":
-					 def = false;
 					
-					//ultimo char so attvalue
-					Character widthUnits = new Character (attVal.charAt(attVal.length()-1));
-					if(!widthUnits.equals('F') && !widthUnits.equals('M'))
-					{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid width units in taxiwayPath. using default (M)");
-							def=true;								
-					}
+					String widthString = AttributesChecker.alt(tpCtx);
+					m.put(attName, attVal);
 					
-					if(def==true)
-					{
-						//valor antigo com as unidades por defeito M
-						String value = new String(attVal.substring(0, attVal.length()-1)+"M");
-						m.put(attName, value);
-						requiredCounter++;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
 					break;
 				case "weightLimit":	
-					 def = false;
-									
-					try
-					{
-						Float.parseFloat(attVal);
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath weightLimit: " + attVal + ". Expected: floating point value" );
-						return;
-					}
 					
+					if(AttributesChecker.isfloat(tpCtx))
 						m.put(attName, attVal);
-						requiredCounter++;
 					
 					break;
 					case "surface":
-						if(!taxiwayPathSurfaceValues.contains(attVal))
-						{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath surface: " + attVal + ". Expected: " + taxiwayPathSurfaceValues);
-						return;
-						}
-						else
-						{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+						if(AttributesChecker.surfaceTP(tpCtx, taxiwayPathSurfaceValues))
+							m.put(attName, attVal);
+							
+					
 					break;
 				case "drawSurface":	
 					
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE");
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					String dsString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, dsString);
+					
+					
 					break;
 				case "drawDetail":	
 					
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE");
-						return;
-					}
-					else
-					{
-						m.put(attName, attVal);
-						requiredCounter++;
-					}
+					String ddString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, ddString);
+					
 					break;
 				case "centerLine":
 
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE. defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					String clString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, clString);
+					
 					break;
 				case "centerLineLighted":
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE. defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					String cllString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, cllString);
 					break;
 				case "leftEdge":
 					
-					if(!attVal.equals("NONE") && !attVal.equals("SOLID") &&
-							!attVal.equals("DASHED") && !attVal.equals("SOLID_DASHED"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must one of NONE, SOLID, DASHED or SOLID_DASHED. defaulting to NONE");
-						m.put(attName, "NONE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					String leString = AttributesChecker.rightedge(tpCtx);
+					m.put(attName, leString);
+					
 					break;
 				case "leftEdgeLighted":
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE. defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					String lelString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, lelString);
 					break;
 				case "rightEdge":
-					if(!attVal.equals("NONE") && !attVal.equals("SOLID") &&
-							!attVal.equals("DASHED") && !attVal.equals("SOLID_DASHED"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must one of NONE, SOLID, DASHED or SOLID_DASHED. defaulting to NONE");
-						m.put(attName, "NONE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					
+					String reString = AttributesChecker.rightedge(tpCtx);
+					m.put(attName, reString);
+					
 					break;
 				case "rightEdgeLighted":
-					if(!attVal.equals("TRUE") && !attVal.equals("FALSE"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must be TRUE or FALSE. defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attVal);
-					}
+					String relString = AttributesChecker.trueorfalse(tpCtx);
+					m.put(attName, relString);
 					break;
 				case "number":	
 					
-					String[] numberOptions = {"EAST","NORTH","NORTHEAST","NORTHWEST","SOUTH","SOUTHEAST","SOUTHWEST","WEST"};
-
-
-					if(!Arrays.asList(numberOptions).contains(tpCtx.attributeValue().getText()) &&
-							(Integer.parseInt(tpCtx.attributeValue().getText()) < 00 || Integer.parseInt(tpCtx.attributeValue().getText()) > 36)){
-						
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxywayPath number: " + tpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(numberOptions) + ",or a int from 00 to 36");
-						return;
-						
-					}else{
-						m.put(tpCtx.attributeName().getText(), tpCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					if(AttributesChecker.number(tpCtx))
+						m.put(attName, attVal);
 					break;
 				case "designator":
-					String[] designatorOptions = {"NONE","C","CENTER","L","LEFT","R","RIGHT","W","WATER","A","B"};
-					if(!Arrays.asList(designatorOptions).contains(tpCtx.attributeValue().getText())){
-						
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxywayPath designator. used: " + tpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(designatorOptions));
-						return;
-						
-					}else{
-						m.put(tpCtx.attributeName().getText(), tpCtx.attributeValue().getText());
-						requiredCounter++;
-					}
+					if(AttributesChecker.number(tpCtx))
+					m.put(attName, attVal);
 					break;
 					
 				case "name":
 					
-					if(Integer.parseInt(attVal)<0 || Integer.parseInt(attVal)>255)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxywayPath name value. used: " + tpCtx.attributeValue().getText() + ". Expected: between 0 and 255");
-					}
-					else
-					{
+					if(AttributesChecker.indexTN(tpCtx))
 						m.put(attName, attVal);
-						requiredCounter++;
-					}
 					
 					break;
 					default:
@@ -2970,15 +2532,232 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 			}
 		}
 		
-		if(requiredCounter!=11)
-		{
-			System.out.println("counter manhoso:" + requiredCounter);
-			System.out.println("Wrong taxywayPath required arguments. Expected: " + taxiwayPathNames);
-		}
-		else
-		{
+		for (String s: taxiwayPathRequired)
+        {
+          if(!m.containsKey(s))
+          {
+        	  System.out.println("The required attribute "+s+" in element taxiwaypath not found");
+        	  return;
+          }
+        }
+		
 			taxiwayPathAtts.put("TAXIWAYPATH"+actualTaxiwayPathindex, m);
 			airportElems.put("TAXIWAYPATH"+actualTaxiwayPathindex, "AIRPORT"+actualAirportIndex);
-		}
+		
 	}
+
+	@Override public void enterHelipadElement(@NotNull XMLParser.HelipadElementContext ctx) 
+	{ 
+		actualHelipadindex++;
+	}
+	
+	@Override public void exitHelipadElement(@NotNull XMLParser.HelipadElementContext ctx) 
+	{
+		Map<String, String> m = new LinkedHashMap<String, String>();
+		for(XMLParser.AttributeContext hCtx : ctx.attribute())
+		{
+
+			String attName=hCtx.attributeName().getText();
+
+			//validar nome de atributo
+			if(helipadNames.contains(attName))
+			{
+				String attVal = hCtx.attributeValue().getText();
+				switch (attName) {
+				case "lat":
+					
+					if(AttributesChecker.lat(hCtx))
+						m.put(attName, attVal);
+					break;
+				case "lon":
+					
+					if(AttributesChecker.lon(hCtx))
+						m.put(attName, attVal);
+
+					break;
+				case "alt":	
+					
+					String altString= AttributesChecker.alt(hCtx);
+						m.put(attName, altString);
+					break;
+				
+				case "surface":
+					// os mesmos de taxywaypathvalues
+					if(AttributesChecker.surfaceTP(hCtx, taxiwayPathSurfaceValues))
+						m.put(attName, attVal);
+					
+					break;
+				case "heading":	
+					
+					if(AttributesChecker.heading(hCtx))
+					m.put(attName, attVal);
+				
+					break;
+				case "lenght":	
+					
+					String lenghtString= AttributesChecker.alt(hCtx);
+					m.put(attName, lenghtString);
+					
+					
+					break;
+				case "width":	
+					
+					String widthString = AttributesChecker.trueorfalse(hCtx);
+					m.put(attName, widthString);
+					
+					break;
+				case "type":
+
+					if(AttributesChecker.typeHL(hCtx))
+						m.put(attName, attVal);
+					
+					break;
+				case "closed":
+					String clsString = AttributesChecker.trueorfalse(hCtx);
+					m.put(attName, clsString);
+					break;
+				case "transparent":
+					
+					String trpString = AttributesChecker.trueorfalse(hCtx);
+					m.put(attName, trpString);
+				
+					break;
+					
+				case "red":
+					//mesmo de indexTN
+					
+					if(AttributesChecker.indexTN(hCtx))
+						m.put(attName, attVal);
+					
+					break;
+				case "green":
+					//mesmo de indexTN
+					
+					if(AttributesChecker.indexTN(hCtx))
+						m.put(attName, attVal);
+					break;
+				case "blue":	
+					//mesmo de indexTN
+					
+					if(AttributesChecker.indexTN(hCtx))
+						m.put(attName, attVal);
+				
+					default:
+						break;
+				}
+			}
+	}
+
+	for (String s: helipadRequired)
+    {
+      if(!m.containsKey(s))
+      {
+    	  System.out.println("The required attribute "+s+" in element helipad not found");
+    	  return;
+      }
+    }
+	
+		helipadAtts.put("HELIPAD"+actualHelipadindex, m);
+		airportElems.put("HELIPAD"+actualHelipadindex, "AIRPORT"+actualAirportIndex);
+	}
+
+	
+
+@Override public void enterJetwayElement(@NotNull XMLParser.JetwayElementContext ctx) 
+{ 
+	actualJetwayindex++;
+}
+
+@Override public void exitJetwayElement(@NotNull XMLParser.JetwayElementContext ctx)  
+{
+	Map<String, String> m = new LinkedHashMap<String, String>();
+	for(XMLParser.AttributeContext jCtx : ctx.attribute())
+	{
+
+		String attName=jCtx.attributeName().getText();
+
+		//validar nome de atributo
+		if(jetwayNames.contains(attName))
+		{
+			String attVal = jCtx.attributeValue().getText();
+			switch (attName) {
+			case "gateName":
+				// o mesmo de taxiwatparkingtypevalues
+				if(AttributesChecker.typeTWPA(jCtx, taxiwayParkingTypeValues))
+					m.put(attName, attVal);
+				break;
+			case "parkingNumber":
+				
+				String pnString = AttributesChecker.integerchecker(jCtx);
+					m.put(attName, pnString);
+
+				break;
+			
+				default:
+					break;
+			}
+		}
+}
+
+for (String s: jetwayRequired)
+{
+  if(!m.containsKey(s))
+  {
+	  System.out.println("The required attribute "+s+" in element jetway not found");
+	  return;
+  }
+}
+
+	jetwayAtts.put("HELIPAD"+actualJetwayindex, m);
+	airportElems.put("HELIPAD"+actualJetwayindex, "AIRPORT"+actualAirportIndex);
+}
+
+@Override public void enterRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx) 
+{ 
+	actualRunwayAliasindex++;
+}
+
+@Override public void exitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx) 
+{
+	Map<String, String> m = new LinkedHashMap<String, String>();
+	for(XMLParser.AttributeContext rwaCtx : ctx.attribute())
+	{
+
+		String attName=rwaCtx.attributeName().getText();
+
+		//validar nome de atributo
+		if(jetwayNames.contains(attName))
+		{
+			String attVal = rwaCtx.attributeValue().getText();
+			switch (attName) {
+			case "number":
+				
+				if(AttributesChecker.number(rwaCtx))
+					m.put(attName, attVal);
+				break;
+			case "designator":
+				
+				if(AttributesChecker.designator(rwaCtx))
+					m.put(attName, attVal);
+
+				break;
+			
+				default:
+					break;
+			}
+		}
+}
+
+for (String s: runwayAliasRequired)
+{
+  if(!m.containsKey(s))
+  {
+	  System.out.println("The required attribute "+s+" in element runwayalias not found");
+	  return;
+  }
+}
+
+jetwayAtts.put("RUNWAYALIAS"+actualRunwayAliasindex, m);
+airportElems.put("RUNWAYALIAS"+actualRunwayAliasindex, "AIRPORT"+actualAirportIndex);
+}
 }

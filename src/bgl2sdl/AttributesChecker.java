@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public class AttributesChecker {
 	
+	
+	
 	static String[] typefuel(XMLParser.AttributeContext patt)
 	{
 		    
@@ -377,7 +379,7 @@ boolean def = false;
 		}
 	}
 	
-	 static boolean end(XMLParser.AttributeContext patt)
+	static boolean end(XMLParser.AttributeContext patt)
 	    {
 		 String[] endOptions = {"PRIMARY","SECONDARY"};
 			if(!Arrays.asList(endOptions).contains(patt.attributeValue().getText())){
@@ -389,7 +391,7 @@ boolean def = false;
 			}
 	    }
 	 
-		static boolean otsurface(XMLParser.AttributeContext patt)
+	static boolean otsurface(XMLParser.AttributeContext patt)
 		{
 			String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
 			if(!Arrays.asList(surfaceOptions).contains(patt.attributeValue().getText())){
@@ -403,7 +405,7 @@ boolean def = false;
 			
 		}
 		
-		static boolean system(XMLParser.AttributeContext patt)
+	static boolean system(XMLParser.AttributeContext patt)
 		{
 			String[] systemOptions = {"NONE","ALSF1","ALSF2","CALVERT","CALVERT2","MALS","MALSF","MALSR","ODALS","RAIL","SALS","SALSF","SSALF","SSALR","SSALS"};
 			if(!Arrays.asList(systemOptions).contains(patt.attributeValue().getText())){
@@ -416,17 +418,17 @@ boolean def = false;
 			
 		}	
 		
-		static String integerchecker(XMLParser.AttributeContext patt)
+	static String integerchecker(XMLParser.AttributeContext patt)
 		{
 			if(!(Integer.parseInt(patt.attributeValue().getText()) < 0 )){
-				System.out.println("Line "+patt.getStart().getLine()+": Wrong approachLights strobes value: " + patt.attributeValue().getText() + ". Put default: 0");
+				System.out.println("Line "+patt.getStart().getLine()+": Wrong integer value: " + patt.attributeValue().getText() + ". Put default: 0");
 				return "0";
 			}else{
 				return patt.attributeValue().getText();
 			}
 		}	
 		
-		static boolean positive(XMLParser.AttributeContext patt)
+	static boolean positive(XMLParser.AttributeContext patt)
 		{
 			if(!(Integer.parseInt(patt.attributeValue().getText()) <= 0 )){
 				System.out.println("Line "+patt.getStart().getLine()+": Wrong value. Must be positive " + patt.attributeValue().getText() );
@@ -437,7 +439,7 @@ boolean def = false;
 			}
 		}	
 		
-		static boolean pitch(XMLParser.AttributeContext patt)
+	static boolean pitch(XMLParser.AttributeContext patt)
 		
 		{
 			
@@ -454,9 +456,8 @@ boolean def = false;
 			}
 		}	
 		
-		
-		static String rangeGS(XMLParser.AttributeContext patt)
-		{
+	static String rangeGS(XMLParser.AttributeContext patt)
+			{
 			boolean def = false;
 			
 			//ultimo char so attvalue
@@ -480,6 +481,297 @@ boolean def = false;
 				
 			
 		}
+
+	static boolean index(XMLParser.AttributeContext patt)
+
+	{
+		String attVal = patt.attributeValue().getText();
+		String attName = patt.attributeName().getText();
+		if(Integer.parseInt(attVal)<0 || Integer.parseInt(attVal)>3999)
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": invalid " + attName + " value : " + attVal +". Must be int 0 to 3999 and unique.");
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+
+
+	static boolean typeTWP(XMLParser.AttributeContext patt) 
+	{
+		String[] typeOptions = {"NORMAL","HOLD_SHORT","ILS_HOLD_SHORT","HOLD_SHORT_NO_DRAW","ILS_HOLD_SHORT_NO_DRAW"};
+		if(!Arrays.asList(typeOptions).contains(patt.attributeValue().getText())){
+
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong waypoint type: " + patt.attributeValue().getText() + ". Expected: " + Arrays.toString(typeOptions));
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+
+	static boolean typeTWPA(XMLParser.AttributeContext patt,Vector<String> taxiwayParkingTypeValues)
+	{
+		
+		if(!taxiwayParkingTypeValues.contains(patt.attributeValue().getText()))
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong type value in taxywayParking. must be one of "+ taxiwayParkingTypeValues);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	static boolean nameTWPA(XMLParser.AttributeContext patt,Vector<String> taxiwayParkingNameValues)
+	{
+		
+		String attVal= patt.attributeValue().getText();
+		if(!taxiwayParkingNameValues.contains(attVal))
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong name value in taxywayParking. must be one of "+ taxiwayParkingNameValues);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	static boolean orientation(XMLParser.AttributeContext patt)
+	{
+		String[] orientationOptions = {"FORWARD", "REVERSE"};
+		if(!Arrays.asList(orientationOptions).contains(patt.attributeValue().getText())){
+
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong waypoint orientation: " + patt.attributeValue().getText() + ". Expected: " + Arrays.toString(orientationOptions));
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+
+	static boolean radius(XMLParser.AttributeContext patt)
+	{
+		String attVal=patt.attributeValue().getText();
+		String attName=patt.attributeName().getText();
+		
+		if(attVal.endsWith("M"))
+			
+		{
+			attVal=attVal.substring(0, attVal.length()-1);
+		}
+		
+		if(Float.parseFloat(attVal)<0 || Float.parseFloat(attVal)>360)
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": invalid " + attName + " value : " + attVal + " in taxywayParking");
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	static boolean airlineCodes(XMLParser.AttributeContext patt)
+	{
+		String attVal=patt.attributeValue().getText();
+		int validCounter=0;
+		String[] attValue= attVal.split(" ,");
+		for(String s : attValue)
+		{
+			if (s.length()!=3)
+			{
+				System.out.println("Line "+patt.getStart().getLine()+": Wrong code size for airplaneCodes. each element cointains 3 capital chars.");
+			}
+			else
+			{
+				validCounter++;
+			}
+		}
+		
+		if(validCounter!=attValue.length)
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Warning: not using airplaneCodes in taxyparking");
+			return false;
+		}
+		else
+		{
+			return true;
+			
+		}
+	}
+	
+	static boolean pushback(XMLParser.AttributeContext patt)
+	{
+		String attVal=patt.attributeValue().getText();
+		if(!attVal.equals("NONE") && !attVal.equals("BOTH"))
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong value for pushback in taxiwayParking. Used: " + attVal + "acepts NONE or BOTH");
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	static boolean offset(XMLParser.AttributeContext patt)
+	{
+		String attName=patt.attributeName().getText();
+		String attVal=patt.attributeValue().getText();
+		if(Float.parseFloat(attVal)<0.1 || Float.parseFloat(attVal)>50.0)
+		{
+			
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong value for "+ attName+ ". used: " + attVal+". Must be between 0.1 and 50.0");
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	static boolean indexTN(XMLParser.AttributeContext patt)
+	{
+		 int val= Integer.parseInt(patt.attributeValue().getText());
+			
+			if(val<0 || val>255)
+			{
+				System.out.println("Line "+patt.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+	}
+
+	static boolean nameTN(XMLParser.AttributeContext patt)
+	{
+		String attVal= patt.attributeValue().getText();
+		if(attVal.length()>8)
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": taxiName name value too long: " + attVal + ". Max 8 Chars!");
+			return false;
+		}
+		return true;
+	}
+
+	static boolean typeTP(XMLParser.AttributeContext patt, Vector<String> taxiwayPathTypeValues)
+	{
+		String attVal=patt.attributeValue().getText();
+		if(!taxiwayPathTypeValues.contains(attVal)){
+			
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong taxiwayPath type: " + attVal + ". Expected: " + taxiwayPathTypeValues);
+			return false;
+			
+		}else{
+			return true;
+		}
+	}
+
+	static boolean startend(XMLParser.AttributeContext patt)
+	{
+		
+		try
+		{
+			Integer.parseInt(patt.attributeValue().getText());
+		} 
+		catch(NumberFormatException e) 
+		{ 
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong start value at taxyway path element");
+	        return false; 
+	    } 
+		catch(NullPointerException e) 
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong start value at taxyway path element");
+	        return false;
+		}
+		
+		return true;
+		
+	}
+
+	static boolean isfloat(XMLParser.AttributeContext patt)
+	{
+		  
+			String attVal=patt.attributeValue().getText();
+			
+			try
+			{
+				Float.parseFloat(patt.attributeValue().getText());
+			}
+			catch(NumberFormatException e)
+			{
+				System.out.println("Line "+patt.getStart().getLine()+": Wrong taxiwayPath weightLimit: " + attVal + ". Expected: floating point value" );
+				return false;
+			}
+			
+				return true;
+	}
+
+	static boolean surfaceTP(XMLParser.AttributeContext patt,Vector<String> taxiwayPathSurfaceValues)
+	{
+		String attVal= patt.attributeValue().getText();
+	
+		if(!taxiwayPathSurfaceValues.contains(attVal))
+		{
+		System.out.println("Line "+patt.getStart().getLine()+": Wrong taxiwayPath surface: " + attVal + ". Expected: " + taxiwayPathSurfaceValues);
+		return false;
+		}
+		else
+		{
+		return true;
+	}
+	}
+	
+	static String  rightedge(XMLParser.AttributeContext patt)
+	{
+		String attVal = patt.attributeValue().getText();
+		String attName = patt.attributeValue().getText();
+		if(!attVal.equals("NONE") && !attVal.equals("SOLID") &&
+				!attVal.equals("DASHED") && !attVal.equals("SOLID_DASHED"))
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attVal+ ". must one of NONE, SOLID, DASHED or SOLID_DASHED. defaulting to NONE");
+			return "NONE";
+			
+		}
+		else
+		{
+			return attVal;
+		}
+	}
+	
+	static boolean freuquency(XMLParser.AttributeContext patt)
+	{
+		String attValue = patt.attributeValue().getText();
+		String attName= patt.attributeName().getText();
+		
+		if(Float.parseFloat(attValue)<108.0 || Float.parseFloat(attValue)>136.992)
+		{
+			System.out.println("Line "+patt.getStart().getLine()+": invalid " + attName + " value : " + attValue);
+			return false;
+		}else{
+			return true;
+		}					
+	}
+	
+	static boolean typeHL(XMLParser.AttributeContext patt)
+	{
+		String[] typeOptions = {"NONE","CIRCLE","H","MEDICAL","SQUARE"};
+		if(!Arrays.asList(typeOptions).contains(patt.attributeValue().getText())){
+			
+			System.out.println("Line "+patt.getStart().getLine()+": Wrong type helipad: " + patt.attributeValue().getText() + ". Expected: " + Arrays.toString(typeOptions));
+			return false;
+			
+		}else{
+			return true;
+		}
+		
+	}
+
+	
+
 }
 
    
