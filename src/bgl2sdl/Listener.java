@@ -401,10 +401,7 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPointRequired= new Vector<String>();
 		taxiwayPointRequired.add("index");
 		taxiwayPointRequired.add("type");
-		taxiwayPointRequired.add("lat");
-		taxiwayPointRequired.add("lon");
-		taxiwayPointRequired.add("biasX");
-		taxiwayPointRequired.add("biasZ");
+		
 		
 		taxiwayParkingAttNames= new Vector<String>();
 		taxiwayParkingAttNames.add("index");
@@ -426,20 +423,14 @@ public class Listener extends XMLParserBaseListener {
 		
 		taxiwayParkingRequired= new Vector<String>();
 		taxiwayParkingRequired.add("index");
-		taxiwayParkingRequired.add("lat");
-		taxiwayParkingRequired.add("lon");
-		taxiwayParkingRequired.add("biasX");
-		taxiwayParkingRequired.add("biasZ");
+	
 		taxiwayParkingRequired.add("heading");
 		taxiwayParkingRequired.add("radius");
 		taxiwayParkingRequired.add("type");
 		taxiwayParkingRequired.add("name");
 		taxiwayParkingRequired.add("number");
 		taxiwayParkingRequired.add("pushBack");
-		taxiwayParkingRequired.add("teeOffset1");
-		taxiwayParkingRequired.add("teeOffset2");
-		taxiwayParkingRequired.add("teeOffset3");
-		taxiwayParkingRequired.add("teeOffset4");
+	
 		
 		taxiwayParkingTypeValues= new Vector<String>();
 		taxiwayParkingTypeValues.add("NONE");
@@ -498,18 +489,17 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPathNames.add("designator");
 		taxiwayPathNames.add("name");
 		
-		taxiwayPathNames = new Vector<String>();
-		taxiwayPathNames.add("type");
-		taxiwayPathNames.add("start");
-		taxiwayPathNames.add("end");
-		taxiwayPathNames.add("width");
-		taxiwayPathNames.add("weightLimit");
-		taxiwayPathNames.add("surface");
-		taxiwayPathNames.add("drawSurface");
-		taxiwayPathNames.add("drawDetail");
-		taxiwayPathNames.add("number");
-		taxiwayPathNames.add("designator");
-		taxiwayPathNames.add("name");
+		taxiwayPathRequired = new Vector<String>();
+		taxiwayPathRequired.add("type");
+		taxiwayPathRequired.add("start");
+		taxiwayPathRequired.add("end");
+		taxiwayPathRequired.add("width");
+		taxiwayPathRequired.add("weightLimit");
+		taxiwayPathRequired.add("surface");
+		taxiwayPathRequired.add("drawSurface");
+		taxiwayPathRequired.add("drawDetail");
+		
+		
 		
 		taxiwayPathTypeValues = new Vector<String>();
 		taxiwayPathTypeValues.add("RUNWAY");
@@ -584,6 +574,11 @@ public class Listener extends XMLParserBaseListener {
 		runwayAliasRequired = new Vector<String>();
 		runwayAliasRequired.add("number");
 		runwayAliasRequired.add("designator");
+		
+		
+		taxiNameRequired = new Vector<String>();
+		taxiNameRequired.add("index");
+		taxiNameRequired.add("name");
 		
 	}
 	
@@ -2170,6 +2165,7 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 		}
 		
 		
+	
 		for (String s: taxiwayPointRequired)
         {
           if(!m.containsKey(s))
@@ -2435,7 +2431,15 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 				case "type":
 					
 					if(AttributesChecker.typeTP(tpCtx, taxiwayPathTypeValues))
+						{
+						if(attVal=="RUNWAY")
+						{
+						taxiwayPathRequired.add("name");
+						taxiwayPathRequired.add("number");
+						taxiwayPathRequired.add("designator");
+						}
 						m.put(attName, attVal);
+						}
 					break;
 				case "start":
 					
@@ -2516,7 +2520,7 @@ Map<String, String> m = new LinkedHashMap<String, String>();
 						m.put(attName, attVal);
 					break;
 				case "designator":
-					if(AttributesChecker.number(tpCtx))
+					if(AttributesChecker.designator(tpCtx))
 					m.put(attName, attVal);
 					break;
 					
