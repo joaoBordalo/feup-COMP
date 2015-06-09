@@ -15,24 +15,24 @@ public class bgl2sdl {
 
 	public static void  main(String[] args) throws IOException {
 
-		//java.util.Scanner sc = new java.util.Scanner(System.in);
+		java.util.Scanner sc = new java.util.Scanner(System.in);
 
 
 		System.out.println("Enter some XML from:\n(1): Console\n(2): File");
-		//int opt = sc.nextInt();
+		int opt = sc.nextInt();
 
-		//ANTLRInputStream input = null;
+		ANTLRInputStream input = null;
 		
-		//if(opt == 1){
+		if(opt == 1){
 			System.out.println("Start input:");
-			ANTLRInputStream input = new ANTLRInputStream(System.in);
+			 input = new ANTLRInputStream(System.in);
 		//	System.out.println("End input");
-		/*}else{
+		}else{
 			System.out.println("Filename: ");
 			FileInputStream in = null;
 			String filename = sc.next();
-			ANTLRInputStream input=new ANTLRInputStream(new FileInputStream(new File(filename)));
-		}*/
+			input=new ANTLRInputStream(new FileInputStream(new File(filename)));
+		}
 		
 		System.out.println("Entered: " + input + "\nCreating lexer now...");
 		XMLLexer lexer = new XMLLexer(input);
