@@ -59,11 +59,11 @@ public class bgl2sdl {
 		
 		//TODO put a false the parsingOK when there's an error while parsing
 		//create output file only if the parsing was correct
-		//if(parseListener.parsingOK)
-		//{
+		if(parseListener.parsingOK)
+		{
 			GenerateSDLFile sdlFile = new GenerateSDLFile(parseListener);
 			sdlFile.createFile();
-		//}
+		}
 
 
 

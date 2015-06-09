@@ -27,7 +27,7 @@ public class AttributeChecker {
 			if(Float.parseFloat(attValue[0])<-90 || Float.parseFloat(attValue[0])>90)
 			{
 				System.out.println("Line "+Ctx.getStart().getLine()+": invalid " + attName + " value : " + attValue[0]);
-				return false;
+				
 			}
 
 		}

@@ -1,0 +1,47 @@
+-Grupo: G10
+
+-Constituído por:
+André Humberto Trigo de Bordalo Morais
+
+Bruno Coelho da Silva
+
+João Alberto Trigo de Bordalo Morais
+
+Pedro Dias Faria
+
+-Tema: XML2SDL
+
+
+-Para iniciar o programa:
+ Garantir a versão antlr 4.5
+2 Formas possíveis para executar:
+1ª: Compilar pelo IDE (exemplo Eclipse) pelo ficheiro bgl2sdl.java (onde se encontra a função main)
+2ª: Localizar a pasta bin do projeto na linha de comandos;
+    dentro da pasta escrever na linha de comandos: java bgl2sdl.bgl2sdl
+
+Em seguida, na consola aparecerá um texto a perguntar por duas opções («(1) Console», «(2) File»). Devem ser ignoradas. O projeto está preparado para receber já o conteúdo a ser analizado.
+Para isso copia-se o conteúdo a analizar para a consola e pressionar os botões ctrl+z para o conteúdo ser analizado.
+
+Os ficheiros fridayharbor.xml e whidbey.xml
+O ficheiro errors.xml é o que tem alguns erros propositados os quais o nosso projeto deteta e sinaliza, indicado o tipo de erro e a linha
+
+
+-Verificações feitas:
+Ao valor de cada atributo: quer seja int, float, string, bool e ainda valores específicos
+Aos atributos e elementos que têm ordem específica, obrigatoriedade e opcional.
+
+Criação das tabelas de símbolos
+
+
+    - Instruções de Compilação: como é possível recompilar depois de realizar alterações ao código-fonte? Se tiver sido usado um IDE, devem indicar os passos para instalação, uso de potenciais plugins necessários, e incluir indicações sobre como abrir e compilar o projeto. (será aconselhável testar todos os passos num outro computador, ou numa máquina virtual, de forma a que as instruções sejam completas)
+    - Descrição dos Exemplos: para cada exemplo, devem indicar o que o exemplo pretende demonstrar e o resultado esperado
+    - Descrição de Utilização: como invocar a ferramenta a partir da linha de comandos (ou como correr, no caso de incluir interface gráfica)? Quais os parâmetros usados? (incluir exemplo de uso se possível) A ferramenta deve imprimir na consola esta informação de uso quando invocada sem argumentos na linha de comandos
+    - Análise Lexical: indicar em que ficheiro(s) está especificado o analisador lexical; indicar o que acontece quando o ficheiro de entrada contém erros lexicais
+    - Análise Sintática: indicar em que ficheiro(s) está especificado o analisador sintático; descrever como lidam com erros sintáticos, qual a estratégia de recuperação (se existir), e como informam o utilizador dos erros detetados
+    - Análise Semântica: indicar em que ficheiro(s) está especificado o analisador semântico; descrever todas as validações semânticas implementadas (e possíveis construções e consultas de tabelas de símbolos); descrever como lidam com erros semânticos
+    - Representação(ões) Intermédia(s): descrever a(s) representações intermédias utilizadas, e quais as transformações realizadas
+    - Geração de Código: Descrever como é feita a geração de código final; identificar potenciais problemas relacionados com a geração de código
+    - Testes: descrever a infraestrutura de testes e a bateria de testes utilizados para testar a ferramenta desenvolvida (quantidade de testes, automação dos mesmos, etc.)
+    - Arquitetura: descrever a arquitetura geral da plataforma, principais algoritmos utilizados, e outros pontos que considerem relevantes para a avaliação. No caso particular dos trabalhos #1 (JjQuery) e #5 (JTM), devem documentar bem a linguagem de entrada
+    - Pontos Positivos: descrever os principais aspetos positivos relativos à ferramenta implementada; descrever todas as otimizações realizadas, e os 'extras' implementados
+    - Pontos Negativos: descrever os principais aspetos negativos relativos à ferramenta implementada (bugs conhecidos, pontos de implementação incompleta e melhorias identificadas para potencial trabalho futuro)

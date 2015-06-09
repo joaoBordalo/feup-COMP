@@ -20,7 +20,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 //TODO confirmar se nos required, todas as keys sao diferentes (nao haver atributos dups)
 
 public class Listener extends XMLParserBaseListener {
-	boolean parsingOK;
+	public boolean parsingOK;
 	XMLParser parser;
 	AttributeChecker semanticChecker;
 	Map<String,Map<String,String>> airportAtts = new HashMap<String,Map<String, String>>(); //<nomeElemento,valorElemento>
@@ -50,6 +50,7 @@ public class Listener extends XMLParserBaseListener {
 	Map<String, Map<String, String>> taxiNameAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> taxiwayPathAtts = new HashMap<String, Map<String, String>>();
 	Map<String, Map<String, String>> runwayAliasPathAtts = new HashMap<String, Map<String, String>>();
+	Map<String, Map<String, String>> helipadAtts = new HashMap<String, Map<String, String>>();
 
 	
 	Map<String, Integer> airportAttNames; // para verificar se os nomes dos atributos sao corretos
@@ -70,6 +71,7 @@ public class Listener extends XMLParserBaseListener {
 	Vector<String> overrunAttNames;
 	Vector<String> taxiwayPointAttNames;
 	Vector<String> taxiwayParkingAttNames;
+	Vector<String> helipadAttNames;
 	Vector<String> taxiwayParkingTypeValues;
 	Vector<String> taxiwayParkingNameValues;
 	Vector<String> taxiNameAttNames;
@@ -99,7 +101,7 @@ public class Listener extends XMLParserBaseListener {
 	int actualTaxiwayPointIndex=0;
 	int actualTaxiwayParkingIndex=0;
 	int actualTaxiNameIndex=0;
-	int actualTaxiwayPathIndex=0;
+	int actualHelipadIndex=0;
 	int actualRunwayAliasIndex = 0;
 	
 	public Listener(XMLParser parser)
@@ -378,6 +380,22 @@ public class Listener extends XMLParserBaseListener {
 		taxiwayPathSurfaceValues.add("UNKNOWN");
 		taxiwayPathSurfaceValues.add("WATER");
 		
+		helipadAttNames= new Vector<String>();
+		helipadAttNames.add("lat");
+		helipadAttNames.add("lon");
+		helipadAttNames.add("alt");
+		helipadAttNames.add("surface");
+		helipadAttNames.add("heading");
+		helipadAttNames.add("length");
+		helipadAttNames.add("with");
+		helipadAttNames.add("type");
+		helipadAttNames.add("closed");
+		helipadAttNames.add("transparent");
+		helipadAttNames.add("red");
+		helipadAttNames.add("green");
+		helipadAttNames.add("blue");
+		
+		
 		trueOrFalse= new Vector<String>();
 		trueOrFalse.add("TRUE");
 		trueOrFalse.add("FALSE");
@@ -458,6 +476,11 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+					{
+						parsingOK=false;
+					}
+					
 					break;
 				case "lon":
 					
@@ -465,6 +488,10 @@ public class Listener extends XMLParserBaseListener {
 					{
 					m.put(aCtx.attributeName().getText(), aCtx.attributeValue().getText());
 					requiredCounter++;
+					}
+					else
+					{
+						parsingOK=false;
 					}
 					break;
 					
@@ -487,6 +514,10 @@ public class Listener extends XMLParserBaseListener {
 							requiredCounter++;
 						}
 					}
+					else
+					{
+						parsingOK=false;
+					}
 					
 				break;
 				
@@ -498,7 +529,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
-					
+					else
+						parsingOK=false;
 				break;
 					
 				case "airportTestRadius":
@@ -509,6 +541,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}					
+					else
+						parsingOK=false;
 					
 					break;
 					
@@ -520,6 +554,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					
 					break;
 				default:
@@ -533,6 +569,7 @@ public class Listener extends XMLParserBaseListener {
 			{
 				
 				System.out.println("Line "+aCtx.getStart().getLine()+": Wrong attribute name or wrong order in airport. used: "+ aCtx.attributeName().getText());
+				parsingOK=false;
 				return;
 			}
 			
@@ -541,7 +578,8 @@ public class Listener extends XMLParserBaseListener {
 		if(requiredCounter!=6)
 		{
 			System.out.println("Wrong number of required attributes. must be 6: lat, lon, alt, ident, airportTestRadius, trafficScalar");
-			return;
+			parsingOK=false;
+			
 		}
 		else
 		{
@@ -612,7 +650,8 @@ public class Listener extends XMLParserBaseListener {
 
 				default:
 					System.out.println("Line "+fCtx.getStart().getLine()+": Wrong fuel attribute name. use only type or availability.");
-					return;
+					parsingOK=false;
+					
 					//break;
 				}
 			}
@@ -655,7 +694,9 @@ public class Listener extends XMLParserBaseListener {
 					m.put(attName, attValue);		
 					requiredCounter++;
 				}
-					
+				else
+					parsingOK=false;
+				
 					break;
 					
 				case "lon":
@@ -664,6 +705,9 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);		
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
+					
 					break;
 					
 				case "alt":
@@ -683,6 +727,9 @@ public class Listener extends XMLParserBaseListener {
 						requiredCounter++;
 					}
 					}
+					else
+						parsingOK=false;
+					
 	
 				break;
 				
@@ -696,13 +743,15 @@ public class Listener extends XMLParserBaseListener {
 			{
 				
 				System.out.println("Line "+tCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName);
-				return;
+				parsingOK=false;
+				
 			}
 			
 		}
 		if(requiredCounter != 3){
 			System.out.println("Wrong number of required attributes. must be 3: lat, lon, alt");
-			return;
+			parsingOK=false;
+			
 		}
 			towerAtts.put("TOWER"+actualTowerIndex, m);
 			airportElems.put("TOWER"+actualTowerIndex, "AIRPORT"+actualAirportIndex);
@@ -758,6 +807,9 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);		
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
+					
 					break;
 					
 				case "lon":
@@ -767,6 +819,8 @@ public class Listener extends XMLParserBaseListener {
 					m.put(attName, attValue);
 					requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "alt":
@@ -788,6 +842,8 @@ public class Listener extends XMLParserBaseListener {
 							requiredCounter++;
 						}
 					}
+					else
+						parsingOK=false;
 					
 				break;
 
@@ -798,6 +854,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "heading"://req
@@ -807,6 +865,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 
 					break;
 					
@@ -874,7 +934,8 @@ public class Listener extends XMLParserBaseListener {
 							(Integer.parseInt(rCtx.attributeValue().getText()) < 00 || Integer.parseInt(rCtx.attributeValue().getText()) > 36)){
 						
 						System.out.println("Line "+rCtx.getStart().getLine()+": Wrong runway number: " + rCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(numberOptions) + ",or a int from 00 to 36");
-						return;
+						parsingOK=false;
+						
 						
 					}else{
 						m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
@@ -886,8 +947,10 @@ public class Listener extends XMLParserBaseListener {
 					String[] designatorOptions = {"NONE","C","CENTER","L","LEFT","R","RIGHT","W","WATER","A","B"};
 					if(!Arrays.asList(designatorOptions).contains(rCtx.attributeValue().getText())){
 						
+							
 						System.out.println("Line "+rCtx.getStart().getLine()+": Wrong runway surface: " + rCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(designatorOptions));
-						return;
+						parsingOK=false;
+					
 						
 					}else{
 						m.put(rCtx.attributeName().getText(), rCtx.attributeValue().getText());
@@ -903,6 +966,7 @@ public class Listener extends XMLParserBaseListener {
 					if(!patternAltUnits.equals('F') && !patternAltUnits.equals('M'))
 					{
 							System.out.println("Line "+rCtx.getStart().getLine()+": warning: invalid alt units in runway. using default (M)");
+							
 							def3=true;								
 					}
 					
@@ -998,7 +1062,7 @@ public class Listener extends XMLParserBaseListener {
 			{
 				
 				System.out.println("Line "+rCtx.getStart().getLine()+": Wrong attribute name. used: "+ rCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 			
 			
@@ -1006,7 +1070,7 @@ public class Listener extends XMLParserBaseListener {
 		if(requiredCounter!=8)
 		{
 			System.out.println("Wrong number of required attributes. must be 8: lat, lon, alt, surface, heading, length, width, number");
-			return;
+			parsingOK=false;
 		}
 		
 		runwayAtts.put("RUNWAY"+actualRunwayIndex, m);
@@ -1061,14 +1125,15 @@ public class Listener extends XMLParserBaseListener {
 			}
 			else
 			{
-			System.out.println("Line "+mCtx.getStart().getLine()+": Wrong argument name. used:"+ attName+ ". use "+ markingsAttNames);	
+			System.out.println("Line "+mCtx.getStart().getLine()+": Wrong argument name. used:"+ attName+ ". use "+ markingsAttNames);
+			parsingOK=false;
 			}
 		}
 		
 		if(requiredCounter!=19)
 		{
 			System.out.println("Wrong number of arguments in markings");
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -1136,6 +1201,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(lCtx.attributeName().getText(), lCtx.attributeValue().getText());
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 				
 				default:
@@ -1148,7 +1215,7 @@ public class Listener extends XMLParserBaseListener {
 			{
 				
 				System.out.println("Line "+lCtx.getStart().getLine()+": Wrong attribute name. used: "+ lCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 			
 			
@@ -1156,7 +1223,7 @@ public class Listener extends XMLParserBaseListener {
 		if(requiredCounter!=3)
 		{
 			System.out.println("Wrong number of required attributes. must be 3: center, edge, centerRed");
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -1201,6 +1268,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(otCtx.attributeName().getText(), otCtx.attributeValue().getText());
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 
 				case "length"://req
@@ -1260,6 +1329,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						
 					}
+					else
+						parsingOK=false;
 					break;
 
 				default:
@@ -1269,13 +1340,13 @@ public class Listener extends XMLParserBaseListener {
 			else
 			{				
 				System.out.println("Line "+otCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName);
-				return;
+				parsingOK=false;
 			}
 		}
 		if(requiredCounter!=2)
 		{
 			System.out.println("Wrong number of required attributes. must be 2: end, length");
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -1321,6 +1392,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "system":
@@ -1328,6 +1401,7 @@ public class Listener extends XMLParserBaseListener {
 					if(semanticChecker.checkOptions(attValue, systemOptions, alCtx)){
 						m.put(attName, attValue);
 					}
+				
 					break;
 					
 				case "strobes":
@@ -1371,13 +1445,13 @@ public class Listener extends XMLParserBaseListener {
 			else
 			{				
 				System.out.println("Line "+alCtx.getStart().getLine()+": Wrong attribute name. used: "+ alCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 		}
 		if(requiredCounter!=1)
 		{
 			System.out.println("Wrong number of required attributes. must be 1: end");
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -1415,14 +1489,15 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attVal);
 						requiredCounter++;
 					}
-					
+					else
+						parsingOK=false;
 					break;
 				case "type":
 					
 					if(!vasiTypeValues.contains(attVal))
 					{
 						System.out.println("Line "+vCtx.getStart().getLine()+": Wrong type vaule. must be one of "+ vasiTypeValues);
-						return;
+						parsingOK=false;
 					}
 					else
 					{
@@ -1437,6 +1512,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attVal);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					
 					break;
 				case "biasX":
@@ -1506,7 +1583,7 @@ public class Listener extends XMLParserBaseListener {
 					if(Integer.parseInt(attVal)<0)
 					{
 						System.out.println("Line "+vCtx.getStart().getLine()+": Wrong spacing value. value must be greater or equal to 0");
-						return;
+						parsingOK=false;
 					}
 					
 					if(defSpacing==true)
@@ -1528,6 +1605,7 @@ public class Listener extends XMLParserBaseListener {
 					if(Float.parseFloat(attVal)<0.0 || Float.parseFloat(attVal)>10.0)
 					{
 						System.out.println("Line "+vCtx.getStart().getLine()+": Wrong value for pitch atribute. mute be <10.0 and >0.0");
+						parsingOK=false;
 					}
 					else
 					{
@@ -1544,12 +1622,13 @@ public class Listener extends XMLParserBaseListener {
 			else
 			{
 				System.out.println("Line "+vCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName +". use only: " + vasiAttNames);
-				return;
+				parsingOK=false;
 			}
 		}
 		if(requiredCounter!=7)
 		{
 			System.out.println("Wrong number of atributes. must be 7 valid: "+ vasiAttNames);
+			parsingOK=false;
 		}
 		else
 		{
@@ -1599,7 +1678,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);		
 						requiredCounter++;
 					}
-					
+					else
+						parsingOK=false;
 					break;
 					
 				case "lon":
@@ -1609,6 +1689,8 @@ public class Listener extends XMLParserBaseListener {
 					m.put(attName, attValue);
 					requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "alt":
@@ -1640,7 +1722,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
-
+					else
+						parsingOK=false;
 					break;
 					
 				case "frequency":
@@ -1664,6 +1747,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName,attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "range":
@@ -1692,6 +1777,7 @@ public class Listener extends XMLParserBaseListener {
 					{
 						
 						System.out.println("Line "+ilsCtx.getStart().getLine()+": ILS ident value too long: " + attValue + ". Max 4 Chars!");
+						parsingOK=false;
 						
 					}
 					else
@@ -1707,6 +1793,7 @@ public class Listener extends XMLParserBaseListener {
 					if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
 					{
 						System.out.println("Line "+ilsCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue + ". Must be 0 to 360.");
+						parsingOK=false;
 						
 					}else{
 						m.put(attName,attValue);
@@ -1718,7 +1805,7 @@ public class Listener extends XMLParserBaseListener {
 					{
 						
 						System.out.println("Line "+ilsCtx.getStart().getLine()+": ILS ident value too long: " + attValue + ". Max 48 Chars!");
-						
+						parsingOK=false;
 					}
 					else
 					{
@@ -1742,7 +1829,7 @@ public class Listener extends XMLParserBaseListener {
 			{
 
 				System.out.println("Line "+ilsCtx.getStart().getLine()+": Wrong attribute name. used: "+ ilsCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 
 		}
@@ -1755,7 +1842,7 @@ public class Listener extends XMLParserBaseListener {
 		if(requiredCounter!=8)
 		{
 			System.out.println("Wrong number of required attributes in ils. must be 8: lat, lon, alt, heading, frequency, end, magvar, ident");
-			return;
+			parsingOK=false;
 		}
 
 		ilsAtts.put("ILS"+actualIlsIndex, m);
@@ -1794,6 +1881,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);		
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "lon":
@@ -1803,6 +1892,8 @@ public class Listener extends XMLParserBaseListener {
 					m.put(attName, attValue);
 					requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "alt":
@@ -1832,6 +1923,7 @@ public class Listener extends XMLParserBaseListener {
 					if(attVal<0 || attVal>360)
 					{
 						System.out.println("Line "+gsCtx.getStart().getLine()+": Wrong pitch value in glide scope. must be non negative and not greater than 360");
+						parsingOK=false;
 						
 					}
 					else
@@ -1856,10 +1948,13 @@ public class Listener extends XMLParserBaseListener {
 			m.put("range", "27N");
 			requiredCounter++;
 		}
+		else
+			parsingOK=false;
 		
 		if(requiredCounter!=5)
 		{
 			System.out.println("Wrong number of arguments in GlideSlope. must be 5: "+ glideSlopeAttNames);
+			parsingOK=false;
 		}
 		
 		glideSlopeAtts.put("GLIDESLOPE"+actualGlideSlopeIndex, m);
@@ -1904,6 +1999,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 					
@@ -1980,14 +2077,14 @@ public class Listener extends XMLParserBaseListener {
 			{
 
 				System.out.println("Line "+bpCtx.getStart().getLine()+": Wrong attribute name. used: "+ bpCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 
 
 		}
 		if(requiredCounter != 2){
 			System.out.println("Wrong number of required attributes. must be 2: end, length");
-			return;
+			parsingOK=false;
 		}
 		blastPadAtts.put("BLASTPAD"+actualBlastPadIndex, m);
 		airportElems.put("BLASTPAD"+actualBlastPadIndex, "AIRPORT"+actualAirportIndex);
@@ -2039,6 +2136,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);		
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "lon":
@@ -2048,6 +2147,8 @@ public class Listener extends XMLParserBaseListener {
 					m.put(attName, attValue);
 					requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "alt":
@@ -2102,14 +2203,14 @@ public class Listener extends XMLParserBaseListener {
 			{
 
 				System.out.println("Line "+rsCtx.getStart().getLine()+": Wrong attribute name. used: "+ rsCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 		}
 		
 		if(requiredCounter!=4)
 		{
 			System.out.println("Wrong number of needed arguments. must be at least this 4: "+ runwayStartAttNames);
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -2147,6 +2248,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(oCtx.attributeName().getText(), oCtx.attributeValue().getText());
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 
 				case "length"://req
@@ -2217,8 +2320,8 @@ public class Listener extends XMLParserBaseListener {
 		}
 		if(requiredCounter!=2)
 		{
-			System.out.println("Wrong number of required arguments. Use at least " + overrunAttNames.get(0)+ " and " + overrunAttNames.get(1));
-			return;
+			System.out.println("Wrong number of required arguments in overun. Use at least " + overrunAttNames.get(0)+ " and " + overrunAttNames.get(1));
+			parsingOK=false;
 		}
 		else
 		{
@@ -2264,12 +2367,15 @@ public class Listener extends XMLParserBaseListener {
 				switch (attName) {
 				case "index":
 					
-					if(Integer.parseInt(attValue)<0 || Integer.parseInt(attValue)>3999)
+					if(Integer.parseInt(attValue)>0 || Integer.parseInt(attValue)<3999)
 					{
 				
 						m.put(attName, attValue);
 						requiredCounter++;
+						
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "type":
@@ -2279,6 +2385,7 @@ public class Listener extends XMLParserBaseListener {
 
 						m.put(attName, attValue);
 						requiredCounter++;
+						
 					}
 					
 					break;
@@ -2289,6 +2396,8 @@ public class Listener extends XMLParserBaseListener {
 					if(semanticChecker.checkOptions(attValue, orientationOptions, twpCtx)){
 						m.put(twpCtx.attributeName().getText(), twpCtx.attributeValue().getText());
 					}
+					else
+						parsingOK=false;
 					
 					break;
 					
@@ -2298,6 +2407,8 @@ public class Listener extends XMLParserBaseListener {
 					if (semanticChecker.checkLatitude(attValue, twpCtx)) {
 						m.put(attName, attValue);		
 						requiredCounter++;
+						latlonCounter++;
+					
 					}
 					break;
 					
@@ -2307,6 +2418,8 @@ public class Listener extends XMLParserBaseListener {
 					{
 					m.put(attName, attValue);
 					requiredCounter++;
+					latlonCounter++;
+					
 					}
 					break;
 					
@@ -2329,11 +2442,15 @@ public class Listener extends XMLParserBaseListener {
 						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
+						requiredCounter++;
+						
 					}
 					else
 					{
 						m.put(attName, attValue);
 						biasCounter++;
+						requiredCounter++;
+						
 					}
 
 					break;
@@ -2356,11 +2473,15 @@ public class Listener extends XMLParserBaseListener {
 						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
 						m.put(attName, value);
 						biasCounter++;
+						requiredCounter++;
+						
 					}
 					else
 					{
 						m.put(attName, attValue);
 						biasCounter++;
+						requiredCounter++;
+						
 					}
 					
 					break;
@@ -2373,7 +2494,7 @@ public class Listener extends XMLParserBaseListener {
 			{
 
 				System.out.println("Line "+twpCtx.getStart().getLine()+": Wrong attribute name. used: "+ twpCtx.attributeName().getText());
-				return;
+				parsingOK=false;
 			}
 		}//TODO testar
 		if(((latlonCounter != 2) && (biasCounter != 2)) ||
@@ -2381,11 +2502,12 @@ public class Listener extends XMLParserBaseListener {
 				((biasCounter == 2) && (latlonCounter!= 0)))
 		{
 			System.out.println("Choose one pair of attributes lat/lon or biasX/biasZ");
-			return;
+			parsingOK=false;
 		}
-		if(requiredCounter != 2){
-			System.out.println("Wrong number of required arguments. Use at least " + taxiwayPointAttNames.get(0)+ " and " + taxiwayPointAttNames.get(1));
-			return;
+		
+		if(requiredCounter != 4){
+			System.out.println("Wrong number of required arguments on taxiwatpoint. Use at least " + taxiwayPointAttNames.get(0)+ " and " + taxiwayPointAttNames.get(1));
+			parsingOK=false;
 		}
 		else
 		{
@@ -2426,6 +2548,7 @@ public class Listener extends XMLParserBaseListener {
 					if(val<0 || val>3999)
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong attribute value for index in taxiwayParking. Used " +val+ " must be between 0 and 3999.");
+						parsingOK=false;
 					}
 					else
 					{
@@ -2439,7 +2562,10 @@ public class Listener extends XMLParserBaseListener {
 						if (semanticChecker.checkLatitude(attValue, tpCtx)) {
 							m.put(attName, attValue);		
 							requiredCounter++;
+							latlonCounter++;
 						}
+						else
+							parsingOK=false;
 					break;
 					
 				case "lon":
@@ -2447,8 +2573,11 @@ public class Listener extends XMLParserBaseListener {
 					if(semanticChecker.checkLongitude(attValue, tpCtx))
 					{
 					m.put(attName, attValue);
+					latlonCounter++;
 					requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
 					
 				case "biasX":
@@ -2512,6 +2641,8 @@ public class Listener extends XMLParserBaseListener {
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 
 					break;
 				case "radius":
@@ -2525,6 +2656,7 @@ public class Listener extends XMLParserBaseListener {
 					if(Float.parseFloat(attValue)<0 || Float.parseFloat(attValue)>360)
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": invalid " + attName + " value : " + attValue + " in taxywayParking");
+						parsingOK=false;
 						return;
 					}else{
 						m.put(attName, attValue);
@@ -2536,6 +2668,7 @@ public class Listener extends XMLParserBaseListener {
 					if(!taxiwayParkingTypeValues.contains(attValue))
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong type value in taxywayParking. must be one of "+ taxiwayParkingTypeValues);
+						parsingOK=false;
 						return;
 					}
 					else
@@ -2549,7 +2682,7 @@ public class Listener extends XMLParserBaseListener {
 					if(!taxiwayParkingNameValues.contains(attValue))
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong name value in taxywayParking. must be one of "+ taxiwayParkingNameValues);
-						return;
+						parsingOK=false;
 					}
 					else
 					{
@@ -2564,6 +2697,7 @@ public class Listener extends XMLParserBaseListener {
 					if(val<0 || val>3999)
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong attribute value for number in taxiwayParking. Used " +val+ " must be between 0 and 3999.");
+						parsingOK=false;
 						return;
 					}
 					else
@@ -2603,6 +2737,7 @@ public class Listener extends XMLParserBaseListener {
 					if(!attValue.equals("NONE") && !attValue.equals("BOTH"))
 					{
 						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for pushback in taxiwayParking. Used: " + attValue + "acepts NONE or BOTH");
+						parsingOK=false;
 						return;
 					}
 					else
@@ -2664,12 +2799,13 @@ public class Listener extends XMLParserBaseListener {
 				((biasCounter == 2) && (latlonCounter!= 0)))
 		{
 			System.out.println("Wrong combination of attributes in taxywayParking. Use only lat/lon or biasX/biasZ");
-			return;
+			parsingOK=false;
 		}
 		
-		if(requiredCounter!=7)
+		if(requiredCounter!=9)
 		{
 			System.out.println("Wrong Number of required Arguments in taxiwayParking.");
+			parsingOK=false;
 		}
 		else
 		{
@@ -2709,6 +2845,7 @@ public class Listener extends XMLParserBaseListener {
 					if(val<0 || val>255)
 					{
 						System.out.println("Line "+tnCtx.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
+						parsingOK=false;
 					}
 					else
 					{
@@ -2721,6 +2858,7 @@ public class Listener extends XMLParserBaseListener {
 					if(attValue.length()>8)
 					{
 						System.out.println("Line "+tnCtx.getStart().getLine()+": taxiName name value too long: " + attValue + ". Max 8 Chars!");
+						parsingOK=false;
 						return;
 					}
 					m.put(attName, attValue);
@@ -2733,12 +2871,12 @@ public class Listener extends XMLParserBaseListener {
 			}else
 			{
 				System.out.println("Line "+tnCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName);
-				return;
+				parsingOK=false;
 			}
 		}
 		if(requiredCounter != 2){
 			System.out.println("Wrong number of required arguments. Use " + taxiNameAttNames.get(0)+ " and " + taxiNameAttNames.get(1));
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -2749,271 +2887,248 @@ public class Listener extends XMLParserBaseListener {
 		
 	}
 	
-	@Override public void enterTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx) 
+	@Override public void enterHelipadElement(@NotNull XMLParser.HelipadElementContext ctx) 
 	{ 
-		actualTaxiwayPathIndex++;
+		actualHelipadIndex++;
 	}
 
-	@Override public void exitTaxiwayPathElement(@NotNull XMLParser.TaxiwayPathElementContext ctx) 
+	@Override public void exitHelipadElement(@NotNull XMLParser.HelipadElementContext ctx) 
 	{ 
 		int requiredCounter = 0;
-		boolean def=false;
+		int val;
 		
 		Map<String, String> m = new LinkedHashMap<String, String>();
-		for(XMLParser.AttributeContext tpCtx : ctx.attribute())
+		for(XMLParser.AttributeContext hCtx : ctx.attribute())
 		{
 
-			String attName=tpCtx.attributeName().getText();
-			String attValue=tpCtx.attributeValue().getText();
+			String attName=hCtx.attributeName().getText();
+			String attValue=hCtx.attributeValue().getText();
 
 			//validar nome de atributo
-			if(taxiwayPathNames.contains(attName))
+			if(helipadAttNames.contains(attName))
 			{
 				
 				switch (attName) {
-				case "type":
-					
-					if(!taxiwayPathTypeValues.contains(attValue)){
-						
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath type: " + attValue + ". Expected: " + taxiwayPathTypeValues);
-						return;
-						
-					}else{
+				case "lat":
+					if(semanticChecker.checkLatitude(attValue, hCtx))
+					{
 						m.put(attName, attValue);
 						requiredCounter++;
 					}
+					else
+						parsingOK=false;
 					break;
-				case "start":
+				case "lon":
 					
-					try
+					if(semanticChecker.checkLongitude(attValue, hCtx))
 					{
-						Integer.parseInt(attValue);
-					} 
-					catch(NumberFormatException e) 
-					{ 
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong start value at taxyway path element");
-				        return; 
-				    } 
-					catch(NullPointerException e) 
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong start value at taxyway path element");
-				        return;
-					}
-					
-					m.put(attName, attValue);
+					m.put(hCtx.attributeName().getText(), hCtx.attributeValue().getText());
 					requiredCounter++;
+					}
+					else
+						parsingOK=false;
+					break;
+					
+				case "alt":
+					
+					boolean def = false;
+					
+					if(semanticChecker.checkAltitude(attValue, hCtx, def))
+					{
+						if(def==true)
+						{
+							//valor antigo com as unidades por defeito M
+							String value = new String(attValue.substring(0, attValue.length()-1)+"M");
+							m.put(attName, value);
+							requiredCounter++;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
+					}
+					else
+						parsingOK=false;
+					
+				break;
+				
+				case "surface"://req
+					String[] surfaceOptions = {"ASPHALT","BITUMINOUS","BRICK","CLAY","CEMENT","CONCRETE","CORAL","DIRT","GRASS","GRAVEL","ICE","MACADAM","OIL_TREATED, PLANKS","SAND","SHALE","SNOW","STEEL_MATS","TARMAC","UNKNOWN","WATER"};
+					if(semanticChecker.checkOptions(attValue, surfaceOptions, hCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
+					else
+						parsingOK=false;
+					break;
+					
+				case "heading"://req
+					
+					if(semanticChecker.checkHeading(attValue, hCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
+					else
+						parsingOK=false;
 
 					break;
-				case "end":	
 					
-					try
-					{
-						Integer.parseInt(attValue);
-					} 
-					catch(NumberFormatException e) 
-					{ 
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong end value at taxyway path element");
-				        return; 
-				    } 
-					catch(NullPointerException e) 
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong end value at taxyway path element");
-				        return;
-					}
+				case "length"://req
 					
-					m.put(attName, attValue);
-					requiredCounter++;
-					break;
-				
-				case "width":
-					 def = false;
+					boolean def1 = false;
+					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
 					
 					//ultimo char so attvalue
-					Character widthUnits = new Character (attValue.charAt(attValue.length()-1));
-					if(!widthUnits.equals('F') && !widthUnits.equals('M'))
+					Character lengthUnits = new Character (hCtx.attributeValue().getText().charAt(hCtx.attributeValue().getText().length()-1));
+					if(!lengthUnits.equals('F') && !lengthUnits.equals('M'))
 					{
-							System.out.println("Line "+tpCtx.getStart().getLine()+": warning: invalid width units in taxiwayPath. using default (M)");
-							def=true;								
+							System.out.println("Line "+hCtx.getStart().getLine()+": warning: invalid alt units in runway. using default (M)");
+							def1=true;								
 					}
 					
-					if(def==true)
+					if(def1==true)
 					{
 						//valor antigo com as unidades por defeito M
-						String value = new String(attValue.substring(0, attValue.length()-1)+"M");
-						m.put(attName, value);
+						String value = new String(hCtx.attributeValue().getText().substring(0, hCtx.attributeValue().getText().length()-1)+"M");
+						m.put(hCtx.attributeName().getText(), value);
 						requiredCounter++;
 					}
 					else
 					{
-						m.put(attName, attValue);
-						requiredCounter++;
-					}
-					break;
-				case "weightLimit":	
-					 def = false;
-									
-					try
-					{
-						Float.parseFloat(attValue);
-					}
-					catch(NumberFormatException e)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxiwayPath weightLimit: " + attValue + ". Expected: floating point value" );
-						return;
-					}
-					
-						m.put(attName, attValue);
-						requiredCounter++;
-					
-					break;
-				case "surface":
-					if(semanticChecker.checkOptions(attValue, taxiwayPathSurfaceValues, tpCtx))
-					{
-						m.put(attName, attValue);
-						requiredCounter++;
-					}
-					break;
-				case "drawSurface":	
-					
-					if(semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-					    m.put(attName, attValue);
-						requiredCounter++;
-					}
-					break;
-				case "drawDetail":	
-					
-					if(semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-					    m.put(attName, attValue);
+						m.put(hCtx.attributeName().getText(), hCtx.attributeValue().getText());
 						requiredCounter++;
 					}
 					
 					break;
-				case "centerLine":
-
-					if(semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-					    m.put(attName, attValue);
-						
-					}
-					break;
-				case "centerLineLighted":
-					if(semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-					    m.put(attName, attValue);
-					}
-					break;
-				case "leftEdge":
 					
-					if(!attValue.equals("NONE") && !attValue.equals("SOLID") &&
-							!attValue.equals("DASHED") && !attValue.equals("SOLID_DASHED"))
+				case "width"://req
+					boolean def2 = false;
+					//System.out.println(aCtx.attributeValue().getText().split(" ").length);
+					
+					//ultimo char so attvalue
+					Character widthUnits = new Character (hCtx.attributeValue().getText().charAt(hCtx.attributeValue().getText().length()-1));
+					if(!widthUnits.equals('F') && !widthUnits.equals('M'))
 					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attValue+ ". must one of NONE, SOLID, DASHED or SOLID_DASHED. defaulting to NONE");
-						m.put(attName, "NONE");
-						
+							System.out.println("Line "+hCtx.getStart().getLine()+": warning: invalid alt units in runway. using default (M)");
+							def2=true;								
+					}
+					
+					if(def2==true)
+					{
+						//valor antigo com as unidades por defeito M
+						String value = new String(hCtx.attributeValue().getText().substring(0, hCtx.attributeValue().getText().length()-1)+"M");
+						m.put(hCtx.attributeName().getText(), value);
+						requiredCounter++;
 					}
 					else
 					{
-						m.put(attName, attValue);
-					}
-					break;
-				case "leftEdgeLighted":
-					if(!semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-						System.out.println("defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attValue);
-					}
-					break;
-				case "rightEdge":
-					if(!attValue.equals("NONE") && !attValue.equals("SOLID") &&
-							!attValue.equals("DASHED") && !attValue.equals("SOLID_DASHED"))
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong value for attribute "+attName +"in taxiwayPath. used: "+  attValue+ ". must one of NONE, SOLID, DASHED or SOLID_DASHED. defaulting to NONE");
-						m.put(attName, "NONE");
-						
-					}
-					else
-					{
-						m.put(attName, attValue);
-					}
-					break;
-				case "rightEdgeLighted":
-					if(!semanticChecker.checkOptions(attValue, trueOrFalse, tpCtx))
-					{
-						System.out.println("defaulting to FALSE");
-						m.put(attName, "FALSE");
-						
-					}
-					else
-					{
-						m.put(attName, attValue);
-					}
-					break;
-				case "number":	
-					
-					String[] numberOptions = {"EAST","NORTH","NORTHEAST","NORTHWEST","SOUTH","SOUTHEAST","SOUTHWEST","WEST"};
-
-
-					if(!Arrays.asList(numberOptions).contains(tpCtx.attributeValue().getText()) &&
-							(Integer.parseInt(tpCtx.attributeValue().getText()) < 00 || Integer.parseInt(tpCtx.attributeValue().getText()) > 36)){
-						
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxywayPath number: " + tpCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(numberOptions) + ",or a int from 00 to 36");
-						return;
-						
-					}else{
-						m.put(attName, attValue);
-						requiredCounter++;
-					}
-					break;
-				case "designator":
-					String[] designatorOptions = {"NONE","C","CENTER","L","LEFT","R","RIGHT","W","WATER","A","B"};
-					if(semanticChecker.checkOptions(attValue, designatorOptions, tpCtx))
-					{
-						m.put(attName, attValue);
-						requiredCounter++;
-					}
-					break;
-					
-				case "name":
-					
-					if(Integer.parseInt(attValue)<0 || Integer.parseInt(attValue)>255)
-					{
-						System.out.println("Line "+tpCtx.getStart().getLine()+": Wrong taxywayPath name value. used: " + tpCtx.attributeValue().getText() + ". Expected: between 0 and 255");
-					}
-					else
-					{
-						m.put(attName, attValue);
+						m.put(hCtx.attributeName().getText(), hCtx.attributeValue().getText());
 						requiredCounter++;
 					}
 					
 					break;
+					
+				case "type":
+					String[] typeOptions = {"NONE","CIRCLE","H","MEDICAL","SQUARE"};
+					
+						
+					if(semanticChecker.checkOptions(attValue, typeOptions, hCtx))
+					{
+						m.put(attName, attValue);
+					}
+					
+					break;
+				
+				case "closed":
+					
+					if(semanticChecker.checkOptions(attValue, trueOrFalse, hCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
+					else
+						parsingOK=false;
+				
+				case "transparent":
+					
+					if(semanticChecker.checkOptions(attValue, trueOrFalse, hCtx))
+					{
+						m.put(attName, attValue);
+						requiredCounter++;
+					}
+					else
+						parsingOK=false;
+				
+					
+				case "red":
+					
+					 val= Integer.parseInt(attValue);
+						
+						if(val<0 || val>255)
+						{
+							System.out.println("Line "+hCtx.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
+						break;
+				case "green":
+					
+					 val= Integer.parseInt(attValue);
+						
+						if(val<0 || val>255)
+						{
+							System.out.println("Line "+hCtx.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
+							parsingOK=false;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
+						break;
+				case "blue":
+					
+					 val= Integer.parseInt(attValue);
+						
+						if(val<0 || val>255)
+						{
+							System.out.println("Line "+hCtx.getStart().getLine()+": Wrong attribute value for index in taxiName. Used " +val+ " must be between 0 and 255.");
+							parsingOK=false;
+						}
+						else
+						{
+							m.put(attName, attValue);
+							requiredCounter++;
+						}
+						break;			
 					default:
 					break;
 				}
 			}
 		}
 		
-		if(requiredCounter!=11)
+		if(requiredCounter!=8)
 		{
 			System.out.println("counter manhoso:" + requiredCounter);
-			System.out.println("Wrong taxywayPath required arguments. Expected: " + taxiwayPathNames);
+			System.out.println("Wrong helipad required arguments. Expected: " + helipadAttNames);
+			parsingOK=false;
 		}
 		else
 		{
-			taxiwayPathAtts.put("TAXIWAYPATH"+actualTaxiwayPathIndex, m);
-			airportElems.put("TAXIWAYPATH"+actualTaxiwayPathIndex, "AIRPORT"+actualAirportIndex);
+			helipadAtts.put("HELIPAD"+actualHelipadIndex, m);
+			airportElems.put("HELIPAD"+actualHelipadIndex, "AIRPORT"+actualAirportIndex);
 		}
 	}
 
 	@Override public void enterRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx)
 	{
-		
+		actualRunwayAliasIndex++;
 	}
 	
 	@Override public void exitRunwayAliasElement(@NotNull XMLParser.RunwayAliasElementContext ctx)
@@ -3039,7 +3154,7 @@ public class Listener extends XMLParserBaseListener {
 							(Integer.parseInt(raCtx.attributeValue().getText()) < 00 || Integer.parseInt(raCtx.attributeValue().getText()) > 36)){
 						
 						System.out.println("Line "+raCtx.getStart().getLine()+": Wrong runway number: " + raCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(numberOptions) + ",or a int from 00 to 36");
-						return;
+						parsingOK=false;
 						
 					}else{
 						m.put(raCtx.attributeName().getText(), raCtx.attributeValue().getText());
@@ -3052,11 +3167,11 @@ public class Listener extends XMLParserBaseListener {
 					if(!Arrays.asList(designatorOptions).contains(raCtx.attributeValue().getText())){
 						
 						System.out.println("Line "+raCtx.getStart().getLine()+": Wrong runway surface: " + raCtx.attributeValue().getText() + ". Expected: " + Arrays.toString(designatorOptions));
-						return;
+						parsingOK=false;
 						
 					}else{
-						m.put(raCtx.attributeName().getText(), raCtx.attributeValue().getText());
-						m.put("secondaryDesignator", raCtx.attributeValue().getText());	//se designator estiver definido, secondary é igual
+						m.put(attName, attValue);
+						m.put("secondaryDesignator", attValue);	//se designator estiver definido, secondary é igual
 					}
 					break;
 
@@ -3066,12 +3181,12 @@ public class Listener extends XMLParserBaseListener {
 			}else
 			{
 				System.out.println("Line "+raCtx.getStart().getLine()+": Wrong attribute name. used: "+ attName);
-				return;
+				parsingOK=false;
 			}
 		}
 		if(requiredCounter != 2){
 			System.out.println("Wrong number of required arguments. Use " + runwayAliasAttNames.get(0)+ " and " + runwayAliasAttNames.get(1));
-			return;
+			parsingOK=false;
 		}
 		else
 		{
@@ -3080,13 +3195,5 @@ public class Listener extends XMLParserBaseListener {
 		}
 	}
 	
-	@Override public void enterHelipadElement(@NotNull XMLParser.HelipadElementContext ctx)
-	{
-		
-	}
-
-	@Override public void exitHelipadElement(@NotNull XMLParser.HelipadElementContext ctx)
-	{
-		
-	}
+	
 }

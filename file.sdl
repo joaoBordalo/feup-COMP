@@ -1,39 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario xmlns="dcs:scenario" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bases>
-    <baseOfOperations id="b1">
-      <name>WhidbeyINAS</name>
-      <mobility water="true" underwater="false" land="true" air="true"></mobility>
-      <description>XXX Description XXX</description>
-      <history>XXX History XXX</history>
-      <contactPerson>
-        <name>XXX Email XXX</name>
-        <title></title>
-        <instituition></instituition>
-        <position></position>
-        <address></address>
-        <zipCode></zipCode>
-        <city></city>
-        <stateDistrcRegion></stateDistrcRegion>
-        <country></country>
-        <telephone></telephone>
-        <cellphone></cellphone>
-        <fax></fax>
-        <email></email>
-      </contactPerson>
-      <location>
-        <address>XXX Address XXX</address>
-        <zipCode>XXX ZipCode XXX</zipCode>
-        <city>OakHarbor</city>
-        <stateDistrictRegion>Washington</stateDistrictRegion>
-        <country>UnitedStates</country>
-        <coordinates>
-          <latitude>48.351802714169</latitude>
-          <longitude>-122.655905485153</longitude>
-          <altitude measured="amsl">14.325</altitude>
-        </coordinates>
-      </location>
-    </baseOfOperations>
     <controller></controller>
     <agentType></agentType>
     <noFlyAreas></noFlyAreas>
