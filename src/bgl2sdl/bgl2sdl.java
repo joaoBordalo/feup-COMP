@@ -51,14 +51,19 @@ public class bgl2sdl {
 
 		System.out.println("Initializing walker...");
 		ParseTreeWalker walker = new ParseTreeWalker();
-
-		walker.walk(new Listener(parser), tree);
+		Listener parseListener = new Listener(parser);
+		walker.walk(parseListener, tree);
 		System.out.println("walker ended");
 
 
-
-
-
+		
+		//TODO put a false the parsingOK when there's an error while parsing
+		//create output file only if the parsing was correct
+		//if(parseListener.parsingOK)
+		//{
+			GenerateSDLFile sdlFile = new GenerateSDLFile(parseListener);
+			sdlFile.createFile();
+		//}
 
 
 
