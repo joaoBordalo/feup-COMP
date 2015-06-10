@@ -26,36 +26,42 @@ public class GenerateSDLFile {
 	//// Airp = Airport
 	//// Heli = Helipad
 	//// Runw = Runway
+	//// Taxi = Taxiway
+	//// Park = Parking
+	//// Hang = Hangar
+	//// Util = Utility
+	
 	private Document doc;
 	private Namespace namespace;
-	private int idBoO;
 	private Listener listener;
-
-	public static void  main(String[] args){
-
-		GenerateSDLFile sdlFile = new GenerateSDLFile();
-		sdlFile.createFile();
-
-	}
-
+	
+	private int idBoO;
+	private int idHeli;
+	private int idRunw;
+	private int idTaxi;
+	private int idPark;
+	private int idHang;
+	private int idUtil;
 
 
 	//Constructor
-	public GenerateSDLFile()
-	{
-		doc = new Document();
-		namespace = Namespace.getNamespace("dcs:scenario");
-		idBoO=1;
-	}
-
 	public GenerateSDLFile(Listener listener)
 	{
 		doc = new Document();
 		namespace = Namespace.getNamespace("dcs:scenario");
 		idBoO=1;
+		idHeli=1;
+		idRunw=1;
+		idTaxi=1;
+		idPark=1;
+		idHang=1;
+		idUtil=1;
+		
 		this.listener = listener;
 	}
 
+	
+	
 	public void createFile()
 	{
 		try {
@@ -390,29 +396,23 @@ public class GenerateSDLFile {
 		airport.addContent(magVar);
 		
 		
-		//<helipads>
-		//airport.addContent(writeAirpHelipad());
-		//</helipads>
+		//create helipads
+		airport.addContent(writeAirpHelipads());
 		
-		//<runways>
-		//writeAirpRunway();
-		//</runways>
+		//create runways
+		//airport.addContent(writeAirpRunways());
+			
+		//create taxiways
+		//airport.addContent(writeAirpTaxiways());
 		
-		//<taxiways>
-		//writeAirpTaxiway();
-		//</taxiways>
+		//create parkings
+		//airport.addContent(writeAirpParkings());
 		
-		//<parkings>
-		//writeAirpParking();
-		//</parkings>
+		//create hangars
+		//airport.addContent(writeAirpHangars());
 		
-		//<hangars>
-		//writeAirpHangar();
-		//</hangars>
-		
-		//<utilities>
-		//writeAirpUtility();
-		//</utilities>
+		//create utilities
+		//airport.addContent(writeAirpUtilitys());
 		
 		return airport;
 	}
@@ -451,85 +451,171 @@ public class GenerateSDLFile {
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////                 Inside Airport                 ////////////////
 	////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public Element writeAirpHelipads()
+	{
+		Element helipads = new Element("helipads",namespace);
+		for(int i = 0; i < listener.helipadAtts.size();i++)
+		{
+			helipads.addContent(writeAirpHelipad());
+			idHeli++;
+		}
+		return helipads;
+	}
+	
+	public Element writeAirpRunways()
+	{
+		Element runways = new Element("runways",namespace);
+		for(int i = 0; i < listener.runwayAtts.size();i++)
+		{
+			runways.addContent(writeAirpRunway());
+			idRunw++;
+		}
+		return runways;
+	}
+	
+	public Element writeAirpTaxiways()
+	{
+		Element taxiways = new Element("taxiways" ,namespace);
+		//for(int i = 0; i < listener..size();i++)
+		{
+			//taxiways.addContent(writeAirpTaxiway());
+			//idTaxi++;
+		}
+		return taxiways;
+	}
+	
+	public Element writeAirpParkings()
+	{
+		Element parkings = new Element("parkingSpaces",namespace);
+		//for(int i = 0; i < listener..size();i++)
+		{
+			//parkings.addContent(writeAirpParking());
+			//idPark++;
+		}
+		return parkings;
+	}
+	
+	public Element writeAirpHangars()
+	{
+		Element hangars = new Element("hangars",namespace);
+		//for(int i = 0; i < listener..size();i++)
+		{
+			//hangars.addContent(writeAirpHangar());
+			//idHang++;
+		}
+		return hangars;
+	}
+	
+	public Element writeAirpUtilities()
+	{
+		Element utilities = new Element("utilities",namespace);
+		//for(int i = 0; i < listener..size();i++)
+		{
+			//utilities.addContent(writeAirpRunway());
+			idUtil++;
+		}
+		return utilities;
+	}
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+	
 	//Airp = Airport
 	//multiple helipads
 	//insert id: <helipad id="h1">
-	public void writeAirpHelipad()
+	public Element writeAirpHelipad()
 	{
 		Element helipad= new Element("helipad",namespace);
+		String id="h"+idHeli;
+		helipad.setAttribute("id", id);
 		
 		//create designation 
-		String key= "AIRPORT" + idBoO;
+		String key= "HELIPAD" + idHeli;
 		Element designation = new Element("designation",namespace);
 		designation.setText("XXX Designation XXX");
 		helipad.addContent(designation);
 		
 		//create surface
-		//Element surface = new Element("surface",namespace);
-		//surface.setText(mp);
-		//helipad.addContent(surface);
+		Element surface = new Element("surface",namespace);
+		surface.setText(listener.helipadAtts.get(key).get("surface"));
+		helipad.addContent(surface);
 		
 		//create coordinates
-		//helipad.addContent(coordinates(mp));
+		helipad.addContent(coordinates(listener.helipadAtts.get(key)));
 		
-		//create radius usar length ou width
-		/*
-		 //Element radius = new Element("radius",namespace);
-		//radius.setText(mp);
-		//helipad.addContent(radius); 
-		  */
+		//create radius use length or width
+		Element radius = new Element("radius",namespace);
+		radius.setText(listener.helipadAtts.get(key).get("length"));
+		helipad.addContent(radius); 
+		  
 		 
-
+		return helipad;
 	}
 
 	//multiple runways
 	//insert id: <runway id="r1">
-	public void writeAirpRunway()
+	public Element writeAirpRunway()
 	{
+		Element runway = new Element("runway",namespace);
+		String id="h"+idRunw;
+		runway.setAttribute("id", id);
 		//coordinates(String lat, String lon, String alt, String mesure);
 		//length(String len, String unit) example: <length lengthUnit="Meter">2434</length>
 		//width(String wid, String unit) example: <width lengthUnit="Meter">60.96</width>
 		//surface 
 		//writeRunwBaseEnd();
 		//writeRunwReciprocalEnd();
+		
+		return runway;
 	}
 
-	public void writeAirpTaxiway()
+	public Element writeAirpTaxiway()
 	{
-
+		Element taxiway = new Element("taxiway",namespace);
+		String id="t"+idTaxi;
+		taxiway.setAttribute("id", id);
+		
+		return taxiway;
 	}
 
-	public void writeAirpParking()
+	public Element writeAirpParking()
 	{
-
+		Element parking = new Element("parking",namespace);
+		String id="p"+idPark;
+		parking.setAttribute("id", id);
+		
+		return parking;
 	}
 
-	public void writeAirpHangar()
+	public Element writeAirpHangar()
 	{
-
+		Element hangar = new Element("hangar",namespace);
+		String id="h"+idHang;
+		hangar.setAttribute("id", id);
+		
+		//designation
+		//description
+		//shape
+		
+		return hangar;
 	}
 
-	public void writeAirpUtility()
+	public Element writeAirpUtility()
 	{
-
+		Element utility = new Element("utility",namespace);
+		String id="h"+idUtil;
+		utility.setAttribute("id", id);
+		
+		//designation
+		//coordinates
+		//radius
+		
+		return utility;
 	}
 
 
-	////////////////////////////////////////////////////////////////////////////////
-	////////////////                Inside Helipad                  ////////////////
-	////////////////////////////////////////////////////////////////////////////////
-
-	// Heli = Helipad
-	public void writeHeliCoordinates()
-	{
-
-	}
-
-	public void writeHeliRadius()
-	{
-
-	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////                 Inside Runway                  ////////////////
